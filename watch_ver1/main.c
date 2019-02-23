@@ -4,6 +4,8 @@
  *  Created on: Mar 8, 2018
  *      Author: dadan
  *
+ *      Atmega328p
+ *
  *      Fuses:
  *      EXT = 0xFF
  *      HIGH = 0xD9
