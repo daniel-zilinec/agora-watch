@@ -1,0 +1,11 @@
+Watch:
+- Lower case - sharp edges
+- Turn of when battery level is very low; Get rid of situation when battery is depleated and clock stalls 
+
+Charger:
+- Charger is designed for old generation, hard to get clock charging
+- NO CHARGER PCB!
+
+Clock:
+
+
