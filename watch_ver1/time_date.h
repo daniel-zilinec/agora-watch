@@ -29,6 +29,6 @@ typedef struct
 volatile uptime_t g_uptime;
 
 uint8_t timedate_get_days_of_month(time_t time);
-void time_date_incremet_uptime(uptime_t *uptime);
+void time_date_incremet_uptime(volatile uptime_t *uptime);
 
 #endif /* TIME_DATE_H_ */

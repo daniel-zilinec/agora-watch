@@ -64,7 +64,7 @@ void app_set_time(volatile time_t *time)
 
 		backlight_enable(DEFAULT_BACKLIGHT_TIME);
 
-	    if (button1_state())
+	    if (button1_state())				// BUTTON 1 - move to next digit
 	    {
 	    	// check if hours are not more then 23
 	    	if ( (current_digit == 1) && ((new_time.hours / 10) == 2) && ((new_time.hours % 10) > 3) )
@@ -72,10 +72,17 @@ void app_set_time(volatile time_t *time)
 	    		new_time.hours = 23;
 			}
 	    	++ current_digit;
-
 	    }
 
-	    if (button3_state())
+	    if (button2_state())				// BUTTON 2	- cancel
+	    {
+	    	// wait until all buttons are depressed
+	    	while (button_pressed());
+
+	    	return;
+	    }
+
+	    if (button3_state())				// BUTTON 3 - increment current digit
 	    {
 	    	// increment current digit
 	    	if (current_digit == 1)		// increment tens of hours
@@ -91,9 +98,11 @@ void app_set_time(volatile time_t *time)
 	    		if ((new_time.hours / 10) < 2)		// 00h - 19h
 	    		{
 	    			if ((new_time.hours % 10) < 9)
+	    			{
 	    				new_time.hours += 1;
+	    			}
 	    			else
-	    				new_time.hours = new_time.hours / 10;
+	    				new_time.hours = (new_time.hours / 10) * 10;
 	    		}
 	    		else								// 20h - 24h
 	    		{
@@ -118,6 +127,54 @@ void app_set_time(volatile time_t *time)
 	    			new_time.minutes += 1;
 	    		else
 	    			new_time.minutes  = (new_time.minutes / 10) * 10;
+	    	}
+
+	    }
+
+	    if (button4_state())				// BUTTON 4 - decrement current digit
+	    {
+	    	if (current_digit == 1)		// decrement tens of hours
+	    	{
+	    		if ((new_time.hours / 10) > 0)
+	    			new_time.hours -= 10;
+	    		else
+	    			new_time.hours = (new_time.hours % 10) + 20;
+	    	}
+
+	    	if (current_digit == 2)		// decrement hours
+	    	{
+	    		if ((new_time.hours / 10) < 2)		// 00h - 19h
+	    		{
+	    			if ((new_time.hours % 10) > 0)
+	    			{
+	    				new_time.hours -= 1;
+	    			}
+	    			else
+	    				new_time.hours = ((new_time.hours / 10) * 10 ) + 9;
+	    		}
+	    		else								// 20h - 24h
+	    		{
+	    			if ((new_time.hours % 10) > 0)
+	    				new_time.hours -= 1;
+	    			else
+	    				new_time.hours = ((new_time.hours / 10) * 10) + 3;
+	    		}
+	    	}
+
+	    	if (current_digit == 3)		// decrement tens of minutes
+	    	{
+	    		if ((new_time.minutes / 10) > 0)
+	    			new_time.minutes -= 10;
+	    		else
+	    			new_time.minutes  = (new_time.minutes % 10) + 50;
+	    	}
+
+	    	if (current_digit == 4)		// decrement minutes
+	    	{
+	    		if ((new_time.minutes % 10) > 0)
+	    			new_time.minutes -= 1;
+	    		else
+	    			new_time.minutes  = ((new_time.minutes / 10) * 10) + 9;
 	    	}
 
 	    }
