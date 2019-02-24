@@ -82,6 +82,49 @@ void watchface_show()
 	    battery_get_percentage_string(s_battery_percentage, 5);
 	    canvas_display_text(&image_buffer,&font24, s_battery_percentage, 24, 0, 1);
 
+	    // show uptime from last charge
+	    uint8_t days, hours;
+	    char s_uptime[10];
+
+	    days = g_uptime.hours_from_last_charge / 24;
+	    hours = g_uptime.hours_from_last_charge % 24;
+
+	    s_uptime[0] = '0' + days / 1000;		// days
+	    days -= (days/1000) * 1000;
+	    s_uptime[1] = '0' + days / 100;
+	    days -= (days/100) * 100;
+	    s_uptime[2] = '0' + days / 10;
+	    days -= (days/10) * 10;
+	    s_uptime[3] = '0' + days % 10;
+	    s_uptime[4] = 'd';
+	    s_uptime[5] = ' ';
+	    s_uptime[6] = '0' + hours / 10;			// hours
+	    s_uptime[7] = '0' + hours % 10;
+	    s_uptime[8] = 'h';
+	    s_uptime[9] = 0;
+
+	    canvas_display_text(&image_buffer,&font24, s_uptime, 48, 92, 1);
+
+	    // show total uptime
+	    days = g_uptime.hours_total / 24;
+	    hours = g_uptime.hours_total % 24;
+
+	    s_uptime[0] = '0' + days / 1000;		// days
+	    days -= (days/1000) * 1000;
+	    s_uptime[1] = '0' + days / 100;
+	    days -= (days/100) * 100;
+	    s_uptime[2] = '0' + days / 10;
+	    days -= (days/10) * 10;
+	    s_uptime[3] = '0' + days % 10;
+	    s_uptime[4] = 'd';
+	    s_uptime[5] = ' ';
+	    s_uptime[6] = '0' + hours / 10;			// hours
+	    s_uptime[7] = '0' + hours % 10;
+	    s_uptime[8] = 'h';
+	    s_uptime[9] = 0;
+
+	    canvas_display_text(&image_buffer,&font24, s_uptime, 72, 92, 1);
+
 
 #else
 	    //----- BIG DIGITS ---------

@@ -107,17 +107,24 @@ int main(void)
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
 
 	// initialize time
-	g_time.hours = 18;
-	g_time.minutes = 22;
+	g_time.hours = 10;
+	g_time.minutes = 48;
 	g_time.seconds = 0;
-	g_time.day = 20;
+
+	// initialize date
+	g_time.day = 24;
 	g_time.month = 2;
 	g_time.year = 2019;
 
+	// set default time for alarm and disable it
 	g_alarm_time.hours = 05;
 	g_alarm_time.minutes = 35;
 	g_alarm_time.seconds = 0;
 	g_alarm_enabled = 0;
+
+	// reset uptime counters
+	g_uptime.hours_from_last_charge = 0;
+	g_uptime.hours_total = 0;
 
 	g_dirty_framebuffers = 2;		// content of both framebuffers is undefined after startup
 	display_refresh_needed = 1;
@@ -279,6 +286,8 @@ ISR(TIMER2_OVF_vect)
 		{
 			g_time.minutes = 0;
 			++g_time.hours;
+			time_date_incremet_uptime(&g_uptime);		// increment uptime - it doesn't account manual time change, but it doesn't matter
+
 			if (g_time.hours >= 24)		// next day
 			{
 				g_time.hours = 0;

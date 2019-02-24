@@ -12,6 +12,6 @@
 #define CLEAR_DISPLAY_ON_START
 // #define VIBRATE_ON_START
 // #define FAST_TIME		// every minute has only 10 seconds
-// #define DEBUG_WATCHFACE		// watchface with debug variables and only small time
+#define DEBUG_WATCHFACE		// watchface with debug variables and only small time
 
 #endif /* MAIN_H_ */
