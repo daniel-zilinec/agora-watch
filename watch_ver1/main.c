@@ -107,13 +107,13 @@ int main(void)
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
 
 	// initialize time
-	g_time.hours = 14;
-	g_time.minutes = 18;
+	g_time.hours = 12;
+	g_time.minutes = 17;
 	g_time.seconds = 0;
 
 	// initialize date
-	g_time.day = 24;
-	g_time.month = 2;
+	g_time.day = 02;
+	g_time.month = 3;
 	g_time.year = 2019;
 
 	// set default time for alarm and disable it
@@ -261,6 +261,14 @@ int main(void)
 //	    	    epd_display_frame();
 //	    		// epd_clear_frame_memory(COLOR_WHITE);		// todo: second cleaning should be not needed, but when changing apps the memory is not cleared
 //	    	    // epd_display_frame();
+
+	    		// re-initialize display
+	    		epd_reset();			// todo: wasting with power in delay loops
+	    		epd_init_partial(DISPLAY_TEMPERTURE);
+
+	    		// clear screen - paint it all black
+	    		epd_clear_frame_memory(COLOR_BLACK);
+	    		epd_display_frame();
 
 	    		display_refresh_needed = 1;
 	    		g_dirty_framebuffers = 2;
