@@ -236,8 +236,12 @@ void app_bluetooth()
 
 void backlight_enable(uint8_t timeout)
 {
+	#ifdef BACKLIGHT_ENABLED
+
 	PORTD |= (1<<PORTD6);
 	sw_timer[SW_TIMER_BACKLIGHT] = timeout;
+
+	#endif
 }
 
 void backlight_disable()

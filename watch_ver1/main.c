@@ -108,11 +108,11 @@ int main(void)
 
 	// initialize time
 	g_time.hours = 12;
-	g_time.minutes = 17;
+	g_time.minutes = 22;
 	g_time.seconds = 0;
 
 	// initialize date
-	g_time.day = 02;
+	g_time.day = 31;
 	g_time.month = 3;
 	g_time.year = 2019;
 
@@ -194,15 +194,23 @@ int main(void)
     		--g_dirty_framebuffers;
     	}
 
-
     	watchface_show(g_current_watchface);			// put time into framebuffer
 
     	if (g_battery_charging)
     	{
     		char text[6];
+			#ifdef DEBUG
     		battery_get_voltage_string(text, 6);							// display battery voltage
     		canvas_display_text(&image_buffer,&font24, text, 96, 8, 0);
     		canvas_display_text(&image_buffer,&font24, "charging ", 96, 90, 0);
+			#endif
+
+			#ifndef DEBUG
+    		battery_get_percentage_string(text, 4);							// display battery percentage
+    		canvas_display_text(&image_buffer,&font24, "charging ", 96, 82, 0);
+    		canvas_display_text(&image_buffer,&font24, text, 96, 16, 0);
+			#endif
+
     	}
 
     	else if (g_battery_low_flag)		// show warning if battery is low
@@ -249,18 +257,20 @@ int main(void)
 	    		// wait until all buttons are depressed
 	    		while (button_pressed());
 
+				#ifdef DEBUG
 	    		++g_current_watchface;
 	    		if (g_current_watchface >= WATCHFACE_COUNT)
 	    		{
 	    			g_current_watchface = 0;
 	    		}
 
-//	    		epd_reset();
-//	    		epd_init_full(DISPLAY_TEMPERTURE);
-//	    		epd_clear_frame_memory(COLOR_WHITE);
-//	    	    epd_display_frame();
-//	    		// epd_clear_frame_memory(COLOR_WHITE);		// todo: second cleaning should be not needed, but when changing apps the memory is not cleared
-//	    	    // epd_display_frame();
+	    		#else
+
+	    		epd_reset();
+	    		epd_init_full(DISPLAY_TEMPERTURE);
+	    		epd_clear_frame_memory(COLOR_WHITE);
+
+				#endif
 
 	    		// re-initialize display
 	    		epd_reset();			// todo: wasting with power in delay loops
