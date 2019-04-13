@@ -107,18 +107,26 @@ int main(void)
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
 
 	// initialize time
-	g_time.hours = 18;
+	g_time.hours = 12;
 	g_time.minutes = 22;
 	g_time.seconds = 0;
-	g_time.day = 20;
-	g_time.month = 2;
+
+	// initialize date
+	g_time.day = 31;
+	g_time.month = 3;
 	g_time.year = 2019;
 
+	// set default time for alarm and disable it
 	g_alarm_time.hours = 05;
 	g_alarm_time.minutes = 35;
 	g_alarm_time.seconds = 0;
 	g_alarm_enabled = 0;
 
+	// reset uptime counters
+	g_uptime.hours_from_last_charge = 0;
+	g_uptime.hours_total = 0;
+
+	g_current_watchface = 0;
 	g_dirty_framebuffers = 2;		// content of both framebuffers is undefined after startup
 	display_refresh_needed = 1;
 
@@ -160,6 +168,7 @@ int main(void)
 	    if (battery_is_charging())
 	    {
 			g_battery_charging = 1;
+			g_uptime.hours_from_last_charge = 0;
 		}
 	    else if (g_battery_charging)
 	    {
@@ -185,15 +194,23 @@ int main(void)
     		--g_dirty_framebuffers;
     	}
 
-
-    	watchface_show();			// put time into framebuffer
+    	watchface_show(g_current_watchface);			// put time into framebuffer
 
     	if (g_battery_charging)
     	{
     		char text[6];
+			#ifdef DEBUG
     		battery_get_voltage_string(text, 6);							// display battery voltage
     		canvas_display_text(&image_buffer,&font24, text, 96, 8, 0);
     		canvas_display_text(&image_buffer,&font24, "charging ", 96, 90, 0);
+			#endif
+
+			#ifndef DEBUG
+    		battery_get_percentage_string(text, 4);							// display battery percentage
+    		canvas_display_text(&image_buffer,&font24, "charging ", 96, 82, 0);
+    		canvas_display_text(&image_buffer,&font24, text, 96, 16, 0);
+			#endif
+
     	}
 
     	else if (g_battery_low_flag)		// show warning if battery is low
@@ -237,14 +254,33 @@ int main(void)
 	    	// Button 1 & 2 - refresh screen
 	    	if(button1_state() && button2_state())
 	    	{
-	    		backlight_disable();		// nothing interesting to see when refreshing display
+	    		// wait until all buttons are depressed
+	    		while (button_pressed());
+
+				#ifdef DEBUG
+	    		++g_current_watchface;
+	    		if (g_current_watchface >= WATCHFACE_COUNT)
+	    		{
+	    			g_current_watchface = 0;
+	    		}
+
+	    		#else
 
 	    		epd_reset();
 	    		epd_init_full(DISPLAY_TEMPERTURE);
 	    		epd_clear_frame_memory(COLOR_WHITE);
-	    	    epd_display_frame();
-	    		// epd_clear_frame_memory(COLOR_WHITE);		// todo: second cleaning should be not needed, but when changing apps the memory is not cleared
-	    	    // epd_display_frame();
+
+
+				#endif
+
+	    		// re-initialize display
+	    		epd_reset();			// todo: wasting with power in delay loops
+	    		epd_init_partial(DISPLAY_TEMPERTURE);
+
+	    		// clear screen - paint it all black
+	    		epd_clear_frame_memory(COLOR_BLACK);
+	    		epd_display_frame();
+
 	    		display_refresh_needed = 1;
 	    		g_dirty_framebuffers = 2;
 	    	}
@@ -279,6 +315,8 @@ ISR(TIMER2_OVF_vect)
 		{
 			g_time.minutes = 0;
 			++g_time.hours;
+			time_date_incremet_uptime(&g_uptime);		// increment uptime - it doesn't account manual time change, but it doesn't matter
+
 			if (g_time.hours >= 24)		// next day
 			{
 				g_time.hours = 0;

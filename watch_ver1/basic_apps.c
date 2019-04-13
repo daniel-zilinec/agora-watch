@@ -64,7 +64,7 @@ void app_set_time(volatile time_t *time)
 
 		backlight_enable(DEFAULT_BACKLIGHT_TIME);
 
-	    if (button1_state())
+	    if (button1_state())				// BUTTON 1 - move to next digit
 	    {
 	    	// check if hours are not more then 23
 	    	if ( (current_digit == 1) && ((new_time.hours / 10) == 2) && ((new_time.hours % 10) > 3) )
@@ -72,10 +72,17 @@ void app_set_time(volatile time_t *time)
 	    		new_time.hours = 23;
 			}
 	    	++ current_digit;
-
 	    }
 
-	    if (button3_state())
+	    if (button2_state())				// BUTTON 2	- cancel
+	    {
+	    	// wait until all buttons are depressed
+	    	while (button_pressed());
+
+	    	return;
+	    }
+
+	    if (button3_state())				// BUTTON 3 - increment current digit
 	    {
 	    	// increment current digit
 	    	if (current_digit == 1)		// increment tens of hours
@@ -91,9 +98,11 @@ void app_set_time(volatile time_t *time)
 	    		if ((new_time.hours / 10) < 2)		// 00h - 19h
 	    		{
 	    			if ((new_time.hours % 10) < 9)
+	    			{
 	    				new_time.hours += 1;
+	    			}
 	    			else
-	    				new_time.hours = new_time.hours / 10;
+	    				new_time.hours = (new_time.hours / 10) * 10;
 	    		}
 	    		else								// 20h - 24h
 	    		{
@@ -118,6 +127,54 @@ void app_set_time(volatile time_t *time)
 	    			new_time.minutes += 1;
 	    		else
 	    			new_time.minutes  = (new_time.minutes / 10) * 10;
+	    	}
+
+	    }
+
+	    if (button4_state())				// BUTTON 4 - decrement current digit
+	    {
+	    	if (current_digit == 1)		// decrement tens of hours
+	    	{
+	    		if ((new_time.hours / 10) > 0)
+	    			new_time.hours -= 10;
+	    		else
+	    			new_time.hours = (new_time.hours % 10) + 20;
+	    	}
+
+	    	if (current_digit == 2)		// decrement hours
+	    	{
+	    		if ((new_time.hours / 10) < 2)		// 00h - 19h
+	    		{
+	    			if ((new_time.hours % 10) > 0)
+	    			{
+	    				new_time.hours -= 1;
+	    			}
+	    			else
+	    				new_time.hours = ((new_time.hours / 10) * 10 ) + 9;
+	    		}
+	    		else								// 20h - 24h
+	    		{
+	    			if ((new_time.hours % 10) > 0)
+	    				new_time.hours -= 1;
+	    			else
+	    				new_time.hours = ((new_time.hours / 10) * 10) + 3;
+	    		}
+	    	}
+
+	    	if (current_digit == 3)		// decrement tens of minutes
+	    	{
+	    		if ((new_time.minutes / 10) > 0)
+	    			new_time.minutes -= 10;
+	    		else
+	    			new_time.minutes  = (new_time.minutes % 10) + 50;
+	    	}
+
+	    	if (current_digit == 4)		// decrement minutes
+	    	{
+	    		if ((new_time.minutes % 10) > 0)
+	    			new_time.minutes -= 1;
+	    		else
+	    			new_time.minutes  = ((new_time.minutes / 10) * 10) + 9;
 	    	}
 
 	    }
@@ -158,6 +215,43 @@ void app_status_screen(void)
 	battery_get_percentage_string(text, 6);							// battery charge %
 	canvas_display_text(&image_buffer,&font24, text, 24, 10, 1);
 
+	// show uptime from last charge
+	uint16_t days;
+	char s_uptime[6];
+
+	days = g_uptime.hours_from_last_charge / 24;
+	s_uptime[0] = '0' + days / 1000;		// days
+	days -= (days/1000) * 1000;
+	s_uptime[1] = '0' + days / 100;
+	days -= (days/100) * 100;
+	s_uptime[2] = '0' + days / 10;
+	days -= (days/10) * 10;
+	s_uptime[3] = '0' + days % 10;
+	s_uptime[4] = 'd';
+	s_uptime[5] = 0;
+
+	canvas_display_text(&image_buffer,&font24, "Charge:", 48, 128, 1); // 124 (malo)
+	canvas_display_text(&image_buffer,&font24, s_uptime, 48, 10, 1);
+
+	// show total uptime
+	days = g_uptime.hours_total / 24;
+
+	s_uptime[0] = '0' + days / 1000;		// days
+	days -= (days/1000) * 1000;
+	s_uptime[1] = '0' + days / 100;
+	days -= (days/100) * 100;
+	s_uptime[2] = '0' + days / 10;
+	days -= (days/10) * 10;
+	s_uptime[3] = '0' + days % 10;
+	s_uptime[4] = 'd';
+	s_uptime[5] = 0;
+
+	canvas_display_text(&image_buffer,&font24, "Uptime:", 72, 128, 1); // 124 (malo)
+	canvas_display_text(&image_buffer,&font24, s_uptime, 72, 10, 1);
+
+	canvas_display_text(&image_buffer,&font24, "FW:", 96, 196, 1);
+	canvas_display_text(&image_buffer,&font24, FW_VER, 96, 10, 1);
+
 	epd_display_frame();
 
 	sw_timer[SW_TIMER_IDLE] = IDLE_TIME;
@@ -179,8 +273,12 @@ void app_bluetooth()
 
 void backlight_enable(uint8_t timeout)
 {
+	#ifdef BACKLIGHT_ENABLED
+
 	PORTD |= (1<<PORTD6);
 	sw_timer[SW_TIMER_BACKLIGHT] = timeout;
+
+	#endif
 }
 
 void backlight_disable()

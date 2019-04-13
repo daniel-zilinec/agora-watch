@@ -13,7 +13,7 @@
 // Values for % of charge calculation
 #define BATTERY_VOLTAGE_LOW		3500	// for low battery warning
 #define BATTERY_VOLTAGE_DISCHARGED		3350	// todo: going to low power state
-#define BATTERY_VOLTAGE_FULL		4000
+#define BATTERY_VOLTAGE_FULL		4100
 
 volatile uint16_t g_battery_voltage;
 

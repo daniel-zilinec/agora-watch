@@ -68,3 +68,9 @@ uint8_t timedate_get_days_of_month(time_t time)
 
 	return 31;						// shouldn't get here
 }
+
+void time_date_incremet_uptime(volatile uptime_t *uptime)
+{
+	++uptime->hours_from_last_charge;
+	++uptime->hours_total;
+}

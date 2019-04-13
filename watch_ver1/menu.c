@@ -26,7 +26,8 @@ void menu_show()
 	const uint8_t menu_item_count = MENU_ITEM_COUNT;
 	uint8_t menu_current_item = 0;
 
-	// menu loop
+	// CLOCK menu loop
+#ifdef DEVICE_TYPE_WATCH
 	while (1)
 	{
 		epd_clear_frame_memory(COLOR_WHITE);
@@ -93,6 +94,46 @@ void menu_show()
 
 			}
 		}
+#endif
+
+#ifdef DEVICE_TYPE_CLOCK
+		while (1)
+		{
+			epd_clear_frame_memory(COLOR_WHITE);
+
+			canvas_display_text(&image_buffer,&font24, "Set time", 0, 10, !(menu_current_item == MENU_ITEM_SET_TIME));				// menu item 2
+			canvas_display_text(&image_buffer,&font24, "Show info", 24, 10, !(menu_current_item == MENU_ITEM_SHOW_INFO));			// menu item 3
+			// canvas_display_text(&image_buffer,&font24, "Bluetooth", 96, 10, !(menu_current_item == MENU_ITEM_BLUETOOTH));			// menu item 3
+
+			epd_display_frame();
+
+			sw_timer[SW_TIMER_IDLE] = IDLE_TIME;
+
+			while (!button_pressed())		// wait until any button pressed
+			{
+				if (sw_timer[SW_TIMER_IDLE] == 0)	// when idle too long jump out from menu
+					return;
+			}
+
+			backlight_enable(DEFAULT_BACKLIGHT_TIME);
+
+			// Button 1 - select menu item
+			if (button1_state())
+			{
+				// run application
+				switch (menu_current_item)
+				{
+					case MENU_ITEM_SET_TIME:
+						app_set_time(&g_time);
+						break;
+
+					case MENU_ITEM_SHOW_INFO:
+						app_status_screen();
+						break;
+
+				}
+			}
+#endif
 
 		// Button 2 - quit menu
 		if (button2_state())

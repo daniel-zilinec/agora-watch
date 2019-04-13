@@ -11,8 +11,11 @@
 #include "epd_1_54.h"
 #include "basic_apps.h"
 
-extern volatile time_t g_time;
+#define WATCHFACE_COUNT	2				// number of available watchfaces (1 or more)
 
-void watchface_show();
+extern volatile time_t g_time;
+uint8_t g_current_watchface;
+
+void watchface_show(const uint8_t num);
 
 #endif /* WATCHFACE_H_ */
