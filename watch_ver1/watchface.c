@@ -84,7 +84,8 @@ void watchface_show(const uint8_t watchface_num)
 			canvas_display_text(&image_buffer,&font24, s_battery_percentage, 24, 0, 1);
 
 			// show uptime from last charge
-			uint8_t days, hours;
+			uint8_t hours;
+			uint16_t days;
 			char s_uptime[10];
 
 			days = g_uptime.hours_from_last_charge / 24;

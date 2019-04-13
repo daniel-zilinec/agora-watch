@@ -215,6 +215,43 @@ void app_status_screen(void)
 	battery_get_percentage_string(text, 6);							// battery charge %
 	canvas_display_text(&image_buffer,&font24, text, 24, 10, 1);
 
+	// show uptime from last charge
+	uint16_t days;
+	char s_uptime[6];
+
+	days = g_uptime.hours_from_last_charge / 24;
+	s_uptime[0] = '0' + days / 1000;		// days
+	days -= (days/1000) * 1000;
+	s_uptime[1] = '0' + days / 100;
+	days -= (days/100) * 100;
+	s_uptime[2] = '0' + days / 10;
+	days -= (days/10) * 10;
+	s_uptime[3] = '0' + days % 10;
+	s_uptime[4] = 'd';
+	s_uptime[5] = 0;
+
+	canvas_display_text(&image_buffer,&font24, "Charge:", 48, 128, 1); // 124 (malo)
+	canvas_display_text(&image_buffer,&font24, s_uptime, 48, 10, 1);
+
+	// show total uptime
+	days = g_uptime.hours_total / 24;
+
+	s_uptime[0] = '0' + days / 1000;		// days
+	days -= (days/1000) * 1000;
+	s_uptime[1] = '0' + days / 100;
+	days -= (days/100) * 100;
+	s_uptime[2] = '0' + days / 10;
+	days -= (days/10) * 10;
+	s_uptime[3] = '0' + days % 10;
+	s_uptime[4] = 'd';
+	s_uptime[5] = 0;
+
+	canvas_display_text(&image_buffer,&font24, "Uptime:", 72, 128, 1); // 124 (malo)
+	canvas_display_text(&image_buffer,&font24, s_uptime, 72, 10, 1);
+
+	canvas_display_text(&image_buffer,&font24, "FW:", 96, 196, 1);
+	canvas_display_text(&image_buffer,&font24, FW_VER, 96, 10, 1);
+
 	epd_display_frame();
 
 	sw_timer[SW_TIMER_IDLE] = IDLE_TIME;

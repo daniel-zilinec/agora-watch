@@ -8,6 +8,8 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+#define FW_VER	"0.1.99-dev"
+
 // debug and testing
 #define CLEAR_DISPLAY_ON_START
 // #define VIBRATE_ON_START

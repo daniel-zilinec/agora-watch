@@ -117,7 +117,7 @@ void battery_get_percentage_string(char str[], uint8_t len)
 
     str[1] = '0' + battery_percentage / 10;
     battery_percentage -= (battery_percentage / 10) * 10;
-    if (str[1] == '0')		// remove leading zero
+    if ((str[1] == '0') && (str[0] == ' '))		// remove leading zero
     	str[1] = ' ';
 
     str[2] = '0' + battery_percentage % 10;

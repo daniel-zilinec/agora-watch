@@ -270,6 +270,7 @@ int main(void)
 	    		epd_init_full(DISPLAY_TEMPERTURE);
 	    		epd_clear_frame_memory(COLOR_WHITE);
 
+
 				#endif
 
 	    		// re-initialize display
