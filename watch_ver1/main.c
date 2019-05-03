@@ -87,12 +87,9 @@ int main(void)
     // clear image on display
 	// todo: improve this
 #ifdef CLEAR_DISPLAY_ON_START
-
 	// clear one framebuffer and do full-refresh to physically clear display; second framebuffer will be cleared later
     epd_clear_frame_memory(COLOR_WHITE);
     epd_display_frame();
-    // epd_clear_frame_memory(COLOR_WHITE);
-    // epd_display_frame();
 #endif
 
     // initialize Timer/Counter 2 in asynchronous mode with external 32.768 kHz crystal
@@ -112,8 +109,8 @@ int main(void)
 	g_time.seconds = 0;
 
 	// initialize date
-	g_time.day = 31;
-	g_time.month = 3;
+	g_time.day = 19;
+	g_time.month = 5;
 	g_time.year = 2019;
 
 	// set default time for alarm and disable it
@@ -132,7 +129,6 @@ int main(void)
 
 	set_sleep_mode(SLEEP_MODE_PWR_SAVE);
 
-	// power_adc_disable();
 	power_timer0_disable();
 	power_timer1_disable();
 	power_twi_disable();
@@ -148,18 +144,17 @@ int main(void)
 	g_battery_low_flag = 0;
 	g_battery_discharged_flag = 0;
 	g_battery_charging = 0;
-	battery_setup();
-   	battery_start_measurement();
+
 	button_init();		// initialize buttons
 
 	sei();		// enable global interrupts
 
-
 	while (1)
 	{
+		battery_enable_adc();
 	 	battery_start_measurement();
-    	// battery_get_voltage();
-    	epd_reset();			// todo: wasting with power in delay loops
+
+    	epd_reset();
     	epd_init_partial(DISPLAY_TEMPERTURE);
     	//epd_init_full(DISPLAY_TEMPERTURE);
 
@@ -225,11 +220,7 @@ int main(void)
 
 	    while (!display_refresh_needed)		// loop until display refresh needed
 	    {
-	    	//PORTD &= ~(1<<PORTD6);		// disable backlight
-	    	// PORTD |= (1<<PORTD6);		// enable backlight for faster battery discharging
-	    	sleep_mode();			// Enter sleep mode - IDLE mode
-	    	// PORTD |= (1<<PORTD6);		// enable backlight
-
+	    	sleep_mode();			// Enter sleep mode - POWER SAVE mode
 
 	    	if (button_pressed())
 	    	{
@@ -274,7 +265,7 @@ int main(void)
 				#endif
 
 	    		// re-initialize display
-	    		epd_reset();			// todo: wasting with power in delay loops
+	    		epd_reset();
 	    		epd_init_partial(DISPLAY_TEMPERTURE);
 
 	    		// clear screen - paint it all black
@@ -384,6 +375,7 @@ ISR (PCINT2_vect)
 ISR (ADC_vect)
 {
 	g_battery_voltage = ADC;
+	battery_disable_adc();
 }
 
 

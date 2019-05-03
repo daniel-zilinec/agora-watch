@@ -96,6 +96,8 @@ void epd_init_partial(int8_t temperature)
 
 void epd_reset(void)
 {
+	// todo: wasting with power in delay loops
+
 	// Reset display
 	PORTB &= ~(1<<PORTB0);
 	_delay_ms(10);		// was 200
