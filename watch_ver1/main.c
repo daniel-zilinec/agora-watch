@@ -33,6 +33,7 @@
 #include "canvas.h"
 #include "basic_apps.h"
 #include "timers.h"
+#include "temperature.h"
 
 
 
@@ -48,7 +49,6 @@ volatile uint16_t g_battery_voltage;
 volatile uint8_t g_battery_charging;
 
 uint8_t g_battery_low_flag, g_battery_discharged_flag;
-
 
 image_buffer_t image_buffer;
 
@@ -131,7 +131,7 @@ int main(void)
 
 	power_timer0_disable();
 	power_timer1_disable();
-	power_twi_disable();
+	// power_twi_disable();
 	power_usart0_disable();
 
 
@@ -146,6 +146,7 @@ int main(void)
 	g_battery_charging = 0;
 
 	button_init();		// initialize buttons
+	temperature_enable();
 
 	sei();		// enable global interrupts
 
@@ -153,6 +154,8 @@ int main(void)
 	{
 		battery_enable_adc();
 	 	battery_start_measurement();
+
+	 	temperature_get_raw(&g_temperature_raw);
 
     	epd_reset();
     	epd_init_partial(DISPLAY_TEMPERTURE);
@@ -212,6 +215,7 @@ int main(void)
 	    {
 	    	canvas_display_text(&image_buffer,&font24, " low battery ", 96, 13, 0);
 	    }
+
 
 	    epd_display_frame();		// display framebuffer on display
 	    display_refresh_needed = 0;
