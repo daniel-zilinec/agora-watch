@@ -62,7 +62,7 @@ void epd_init(const unsigned char* lut, int8_t temperature)
     spi_send_data(0x9D);
 
     spi_send_command(WRITE_VCOM_REGISTER);
-    spi_send_data(0x9C);                     // VCOM original_comment:7C original 0xA8
+    spi_send_data(VCOM_VALUE);                     // VCOM is different for every type of display (and even every batch)
 
     spi_send_command(SET_DUMMY_LINE_PERIOD);
     spi_send_data(0x1A);                     // 4 dummy lines per gate
@@ -109,11 +109,16 @@ void epd_set_temperature(int8_t celsius)
 {
 	int16_t temperature_16 = celsius * 16;
 
+	// todo:
 	uint8_t msb = (temperature_16 >> 8) & 0xFF;
 	uint8_t lsb = temperature_16 & 0xF0;
 
 	// uint8_t msb = 0xe7;		// 0x19
 	// uint8_t lsb = 0x00;		// 0x00
+
+	// todo: for testing; 25 °C
+	msb = 0x19;
+	lsb = 0x00;
 
 	spi_send_command(TEMPERATURE_SENSOR_CONTROL);
 	spi_send_data(msb);

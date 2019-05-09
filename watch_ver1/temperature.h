@@ -32,7 +32,7 @@ void temperature_disable();
 
 uint8_t temperature_get_raw(uint16_t *t);
 
-uint8_t temperature_raw_to_celsius (uint16_t raw);
+int16_t temperature_raw_to_celsius (uint16_t raw);
 
 void temperature_celsius_string(uint16_t raw, char str[], uint8_t len);
 

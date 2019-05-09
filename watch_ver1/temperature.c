@@ -88,33 +88,78 @@ uint8_t temperature_get_raw(uint16_t *t)
 	return TMP_SUCCESS;
 }
 
-uint8_t temperature_raw_to_celsius (uint16_t raw)
+int16_t temperature_raw_to_celsius (uint16_t raw)
 {
 	return (raw >> 8);
 }
 
 void temperature_celsius_string(uint16_t raw, char str[], uint8_t len)
 {
-    uint8_t temperature;
+    int16_t temperature;
+    uint8_t negative;
 
-    if (len < 5)		// array is too short
+    // raw = 0x0c8 << 5;		// 25
+    // raw = 0x3F8 << 5;		// 127
+    // raw = 0x7ff << 5;		// -0.125
+     raw = 0x649 << 5;		// -54.875
+
+    if (len < 8)		// array is too short
     	return;
 
-    temperature = temperature_raw_to_celsius(raw);
+    // novy vypocet x = (raw*10)/256
+    if ((raw & 0x8000) == 0)
+    {
+    	temperature = ((uint32_t) raw * 10) / 256;
+    }
+    else
+    {
+    	temperature = (~( raw - 0x01)) * -1;
+    	temperature = (((int32_t) temperature) * 10 ) / 256;
+    }
 
-    str[0] = '0' + temperature/ 100;
-    temperature -= (temperature / 100) * 100;
-    if (str[0] == '0')		// remove leading zero
+
+    // temperature = ( (int16_t) raw * 10)/256;		// in tenths of celsius degree 25°C = 250
+
+    // temperature = 250;
+    if (temperature < 0)				// if the temperature is negative change make absolute value and mark it as negative
+    {
+    	negative = 1;
+    	temperature = temperature * -1;
+    }
+    else
+    {
+    	negative = 0;
+    }
+
+    if (negative)
+    {
+    	str[0] = '-';
+    }
+    else
+    {
     	str[0] = ' ';
+    }
 
-    str[1] = '0' + temperature / 10;
-    temperature -= (temperature / 10) * 10;
-    if ((str[1] == '0') && (str[0] == ' '))		// remove leading zero
+    str[1] = '0' + (uint8_t) (temperature/ 1000);
+    temperature -= (temperature / 1000) * 1000;
+    if (str[1] == '0')		// remove leading zero
+    {
     	str[1] = ' ';
+    }
 
-    str[2] = '0' + temperature % 10;
+    str[2] = '0' + (uint8_t) (temperature / 100);
+    temperature -= (temperature / 100) * 100;
+    if ((str[2] == '0') && (str[1] == ' '))		// remove leading zero
+    	str[2] = ' ';
 
-    str[3] = 'C';
+    str[3] = '0' + (uint8_t) (temperature / 10);
+    temperature -= (temperature / 10) * 10;
 
-    str[4] = 0;
+    str[4] = '.';
+
+    str[5] = '0' + (uint8_t) (temperature % 10);
+
+    str[6] = 'C';
+
+    str[7] = 0;
 }

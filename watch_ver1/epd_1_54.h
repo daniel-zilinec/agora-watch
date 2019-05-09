@@ -14,6 +14,11 @@
 // Temporary temperature of display
 #define DISPLAY_TEMPERTURE 25
 
+// #define VCOM_VALUE	0x9C		// default for long time
+// #define VCOM_VALUE	0x7C		// original comment
+// #define VCOM_VALUE	0xA8		// original value
+ #define VCOM_VALUE	0x50        // -1.5 V
+
 // Display colors
 #define COLOR_WHITE		1
 #define COLOR_BLACK		0
