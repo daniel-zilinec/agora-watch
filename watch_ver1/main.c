@@ -109,7 +109,7 @@ int main(void)
 	g_time.seconds = 0;
 
 	// initialize date
-	g_time.day = 19;
+	g_time.day = 9;
 	g_time.month = 5;
 	g_time.year = 2019;
 

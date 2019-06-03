@@ -98,10 +98,11 @@ void temperature_celsius_string(uint16_t raw, char str[], uint8_t len)
     int16_t temperature;
     uint8_t negative;
 
+    // for test
     // raw = 0x0c8 << 5;		// 25
     // raw = 0x3F8 << 5;		// 127
     // raw = 0x7ff << 5;		// -0.125
-     raw = 0x649 << 5;		// -54.875
+    // raw = 0x649 << 5;		// -54.875
 
     if (len < 8)		// array is too short
     	return;
@@ -109,18 +110,14 @@ void temperature_celsius_string(uint16_t raw, char str[], uint8_t len)
     // novy vypocet x = (raw*10)/256
     if ((raw & 0x8000) == 0)
     {
-    	temperature = ((uint32_t) raw * 10) / 256;
+    	temperature = ((uint32_t) raw * 10) / 256;		// in tenths of celsius degree 25°C = 250
     }
     else
     {
     	temperature = (~( raw - 0x01)) * -1;
-    	temperature = (((int32_t) temperature) * 10 ) / 256;
+    	temperature = (((int32_t) temperature) * 10 ) / 256;	// in tenths of celsius degree 25°C = 250
     }
 
-
-    // temperature = ( (int16_t) raw * 10)/256;		// in tenths of celsius degree 25°C = 250
-
-    // temperature = 250;
     if (temperature < 0)				// if the temperature is negative change make absolute value and mark it as negative
     {
     	negative = 1;

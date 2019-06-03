@@ -10,6 +10,9 @@
 
 #define FW_VER	"0.1.100-dev"
 
+#define HW_VER_1_1		// PCB version 1.1
+// #define HW_VER_1_0	// PCB version 1.0
+
 // debug and testing
 #define CLEAR_DISPLAY_ON_START
 // #define VIBRATE_ON_START
@@ -31,6 +34,5 @@
 #define BACKLIGHT_ENABLED
 
 #endif
-
 
 #endif /* MAIN_H_ */

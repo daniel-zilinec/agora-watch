@@ -10,6 +10,7 @@
 
 #include <avr/io.h>
 #include <avr/power.h>
+#include "main.h"
 
 // Values for % of charge calculation
 #define BATTERY_VOLTAGE_LOW		3500	// for low battery warning
