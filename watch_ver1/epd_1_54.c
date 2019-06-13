@@ -52,6 +52,15 @@ const unsigned char lut_partial_update[] =
 void epd_init(const unsigned char* lut, int8_t temperature)
 {
 	// initialize display
+
+	// for GDEH0213B72
+	spi_send_command(0x74);		// set analog block control
+    spi_send_data(0x54);
+	spi_send_command(0x7E);		// set digital block control
+    spi_send_data(0x3B);
+
+
+    // general
 	spi_send_command(DRIVER_OUTPUT_CONTROL);
     spi_send_data((EPD_HEIGHT - 1) & 0xFF);
     spi_send_data(((EPD_HEIGHT - 1) >> 8) & 0xFF);

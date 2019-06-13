@@ -16,7 +16,7 @@
 // debug and testing
 #define CLEAR_DISPLAY_ON_START
 // #define VIBRATE_ON_START
-#define FAST_TIME		// every minute has only 10 seconds
+// #define FAST_TIME		// every minute has only 10 seconds
 #define DEBUG		// watchface with debug variables and only small time
 
 // the device is clock or watch? Only one can be uncommented
