@@ -30,37 +30,61 @@ const unsigned char lut_partial_update[] =
 
 #ifdef EPD_SIZE_2_13
 
-const unsigned char lut_full_update[] =
-{
-    0x22, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x11,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E,
-    0x01, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-
-const unsigned char lut_partial_update[] =
-{
-    0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x0F, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+//const unsigned char lut_full_update[] =
+//{
+//    0x22, 0x55, 0xAA, 0x55, 0xAA, 0x55, 0xAA, 0x11,
+//    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+//    0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E,
+//    0x01, 0x00, 0x00, 0x00, 0x00, 0x00
+//};
+//
+//const unsigned char lut_partial_update[] =
+//{
+//    0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+//    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+//    0x0F, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+//    0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+//};
 
 #endif
+
+const uint8_t LUT_DATA_full[] =
+{
+  0x80, 0x60, 0x40, 0x00, 0x00, 0x00, 0x00, //LUT0: BB:     VS 0 ~7
+  0x10, 0x60, 0x20, 0x00, 0x00, 0x00, 0x00, //LUT1: BW:     VS 0 ~7
+  0x80, 0x60, 0x40, 0x00, 0x00, 0x00, 0x00, //LUT2: WB:     VS 0 ~7
+  0x10, 0x60, 0x20, 0x00, 0x00, 0x00, 0x00, //LUT3: WW:     VS 0 ~7
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //LUT4: VCOM:   VS 0 ~7
+  0x03, 0x03, 0x00, 0x00, 0x02, // TP0 A~D RP0
+  0x09, 0x09, 0x00, 0x00, 0x02, // TP1 A~D RP1
+  0x03, 0x03, 0x00, 0x00, 0x02, // TP2 A~D RP2
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP3 A~D RP3
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP4 A~D RP4
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP5 A~D RP5
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP6 A~D RP6
+};
+
+const uint8_t LUT_DATA_part[] =
+{
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //LUT0: BB:     VS 0 ~7
+  0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //LUT1: BW:     VS 0 ~7
+  0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //LUT2: WB:     VS 0 ~7
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //LUT3: WW:     VS 0 ~7
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //LUT4: VCOM:   VS 0 ~7
+  0x0A, 0x00, 0x00, 0x00, 0x00, // TP0 A~D RP0
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP1 A~D RP1
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP2 A~D RP2
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP3 A~D RP3
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP4 A~D RP4
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP5 A~D RP5
+  0x00, 0x00, 0x00, 0x00, 0x00, // TP6 A~D RP6
+};
 
 
 void epd_init(const unsigned char* lut, int8_t temperature)
 {
+	/*
 	// initialize display
-
-	// for GDEH0213B72
-	spi_send_command(0x74);		// set analog block control
-    spi_send_data(0x54);
-	spi_send_command(0x7E);		// set digital block control
-    spi_send_data(0x3B);
-
-
-    // general
 	spi_send_command(DRIVER_OUTPUT_CONTROL);
     spi_send_data((EPD_HEIGHT - 1) & 0xFF);
     spi_send_data(((EPD_HEIGHT - 1) >> 8) & 0xFF);
@@ -71,7 +95,7 @@ void epd_init(const unsigned char* lut, int8_t temperature)
     spi_send_data(0x9D);
 
     spi_send_command(WRITE_VCOM_REGISTER);
-    spi_send_data(VCOM_VALUE);                     // VCOM is different for every type of display (and even every batch)
+    spi_send_data(0x9C);                     // VCOM original_comment:7C original 0xA8
 
     spi_send_command(SET_DUMMY_LINE_PERIOD);
     spi_send_data(0x1A);                     // 4 dummy lines per gate
@@ -81,53 +105,82 @@ void epd_init(const unsigned char* lut, int8_t temperature)
     spi_send_data(0x03);                     // X increment; Y increment 0x03
 
     epd_set_temperature(temperature);				// set temperature of display (if not external temp. sensor present)
+*/
+	_delay_ms(100);
+	spi_send_command(0x12);		// software reset
+	_delay_ms(100);
+
+	spi_send_command(0x74); //set analog block control
+	spi_send_data(0x54);
+	spi_send_command(0x7E); //set digital block control
+	spi_send_data(0x3B);
+	spi_send_command(0x01); //Driver output control
+	spi_send_data(0xF9);    // (HEIGHT - 1) % 256
+	spi_send_data(0x00);    // (HEIGHT - 1) / 256
+	spi_send_data(0x00);
+	spi_send_command(0x3C); //BorderWavefrom
+	spi_send_data(0x03);
+	spi_send_command(0x2C); //VCOM Voltage
+	spi_send_data(0x70);    // NA ??
+	spi_send_command(0x03); //Gate Driving voltage Control
+	spi_send_data(0x15);    // 19V
+	spi_send_command(0x04); //Source Driving voltage Control
+	spi_send_data(0x41);    // VSH1 15V
+	spi_send_data(0xA8);    // VSH2 5V
+	spi_send_data(0x32);    // VSL -15V
+	spi_send_command(SET_DUMMY_LINE_PERIOD); //Dummy Line
+	spi_send_data(0x30);
+	spi_send_command(SET_GATE_TIME); //Gate time
+	spi_send_data(0x0A);
+	//_setRamDataEntryMode(em);
+	spi_send_command(DATA_ENTRY_MODE_SETTING);
+	spi_send_data(0x03);                     // X increment; Y increment 0x03
+
 
     // send look-up table for full update mode
     spi_send_command(WRITE_LUT_REGISTER);
 
-    for (int i = 0; i < 30; i++)		// LUT is 30 bytes long
+    for (int i = 0; i < sizeof(LUT_DATA_full); i++)		// LUT is 30 bytes long
     {
         // spi_send_data(lut_full_update[i]);	// whole display is updated
     	//spi_send_data(lut_partial_update[i]);		// only changed pixels are updated
-    	spi_send_data(lut[i]);				// send lookup table
+    	spi_send_data(LUT_DATA_full[i]);				// send lookup table
     }
+
+    // Power on
+    spi_send_command(0x22);
+    spi_send_data(0xc0);
+    spi_send_command(0x20);
 }
 
 void epd_init_full(int8_t temperature)
 {
-	epd_init(lut_full_update, temperature);
+	epd_init(LUT_DATA_full, temperature);
 }
 
 void epd_init_partial(int8_t temperature)
 {
-	epd_init(lut_partial_update, temperature);
+	epd_init(LUT_DATA_part, temperature);
 }
 
 void epd_reset(void)
 {
-	// todo: wasting with power in delay loops
-
 	// Reset display
 	PORTB &= ~(1<<PORTB0);
-	_delay_ms(10);		// was 200
+	_delay_ms(200);		// was 200
 	PORTB |= (1<<PORTB0);
-	_delay_ms(10);		// was 200
+	_delay_ms(200);		// was 200
 }
 
 void epd_set_temperature(int8_t celsius)
 {
 	int16_t temperature_16 = celsius * 16;
 
-	// todo:
 	uint8_t msb = (temperature_16 >> 8) & 0xFF;
 	uint8_t lsb = temperature_16 & 0xF0;
 
 	// uint8_t msb = 0xe7;		// 0x19
 	// uint8_t lsb = 0x00;		// 0x00
-
-	// todo: for testing; 25 °C
-	msb = 0x19;
-	lsb = 0x00;
 
 	spi_send_command(TEMPERATURE_SENSOR_CONTROL);
 	spi_send_data(msb);
@@ -202,9 +255,9 @@ void epd_set_memory_area(uint16_t start_x, uint16_t start_y, uint16_t end_x, uin
 void epd_display_frame(void)
 {
 	spi_send_command(DISPLAY_UPDATE_CONTROL_2);
-	spi_send_data(0xC4);
+	spi_send_data(0xC4);			// was 0xC4
 	spi_send_command(MASTER_ACTIVATION);
-	spi_send_command(TERMINATE_FRAME_READ_WRITE);
+	// spi_send_command(TERMINATE_FRAME_READ_WRITE);
 	epd_wait_until_idle();
 }
 
