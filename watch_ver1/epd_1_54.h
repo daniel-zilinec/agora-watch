@@ -10,6 +10,7 @@
 
 #include <avr/io.h>
 #include "canvas.h"
+#include "main.h"
 
 // Temporary temperature of display
 #define DISPLAY_TEMPERTURE 25
@@ -22,6 +23,7 @@
 // Display colors
 #define COLOR_WHITE		1
 #define COLOR_BLACK		0
+
 
 // set display size
 //#define EPD_SIZE_1_54

@@ -166,7 +166,11 @@ void epd_clear_frame_memory(uint8_t color)
 		spi_send_command(WRITE_RAM);
 		for (int i=0; i < (EPD_WIDTH / 8); ++i)
 		{
+#ifdef INVERTED_COLORS
+			spi_send_data(~value);
+#else
 			spi_send_data(value);
+#endif
 		}
 	}
 #endif
@@ -261,7 +265,11 @@ void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start
 
         for (int i = (start_x / 8); i <= (end_x / 8); i++)
         {
+#ifdef INVERTED_COLORS
+            spi_send_data(~image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+#else
             spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+#endif
         }
     }
 #endif
