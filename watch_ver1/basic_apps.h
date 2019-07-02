@@ -15,6 +15,7 @@
 #include "buttons.h"
 #include "battery.h"
 #include "time_date.h"
+#include "temperature.h"
 #include "main.h"
 
 

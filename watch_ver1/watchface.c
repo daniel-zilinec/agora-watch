@@ -63,21 +63,21 @@ void watchface_show(const uint8_t watchface_num)
 			canvas_display_text(&image_buffer,&font24, s_battery_voltage, 0, 0, 1);
 
 			// show battery voltage ADC value
-			char s_battery_adcval[5];
-			uint16_t battery_voltage = g_battery_voltage;
-			s_battery_adcval[0] = '0' + battery_voltage / 1000;
-			battery_voltage -= (battery_voltage / 1000) * 1000;
-
-			s_battery_adcval[1] = '0' + battery_voltage / 100;
-			battery_voltage -= (battery_voltage / 100) * 100;
-
-			s_battery_adcval[2] = '0' + battery_voltage / 10;
-			battery_voltage -= (battery_voltage / 10) * 10;
-
-			s_battery_adcval[3] = '0' + battery_voltage;
-			s_battery_adcval[4] = 0;
-
-			canvas_display_text(&image_buffer,&font24, s_battery_adcval, 48, 0, 1);
+//			char s_battery_adcval[5];
+//			uint16_t battery_voltage = g_battery_voltage;
+//			s_battery_adcval[0] = '0' + battery_voltage / 1000;
+//			battery_voltage -= (battery_voltage / 1000) * 1000;
+//
+//			s_battery_adcval[1] = '0' + battery_voltage / 100;
+//			battery_voltage -= (battery_voltage / 100) * 100;
+//
+//			s_battery_adcval[2] = '0' + battery_voltage / 10;
+//			battery_voltage -= (battery_voltage / 10) * 10;
+//
+//			s_battery_adcval[3] = '0' + battery_voltage;
+//			s_battery_adcval[4] = 0;
+//
+//			canvas_display_text(&image_buffer,&font24, s_battery_adcval, 48, 0, 1);
 
 			// show battery charge status in %
 			char s_battery_percentage[5];
