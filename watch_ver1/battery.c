@@ -7,8 +7,11 @@
 
 #include "battery.h"
 
-void battery_setup()
+void battery_enable_adc()
 {
+	// enable power for ADC
+	power_adc_enable();
+
 	// enable ADC
 	ADCSRA = (1<<ADEN);
 
@@ -27,20 +30,41 @@ void battery_setup()
 	// set battery charge status pin as input
 	DDRC &= ~(1<<0);
 
+#ifdef HW_VER_1_1
+	// enable pull-up for battery charge status pin (needed for ver1.1)
+	PORTC |= (1<<0);
+#else
 	// disable pull-up for battery charge status pin
 	PORTC &= ~(1<<0);
+#endif
 
 	// enable pin-change interrupt for charge status pin
 	PCICR |= (1<<PCIE1);
 	PCMSK1 |= (1<<PCINT8);
 }
 
+void battery_disable_adc()
+{
+	// disable ADC before shutting it down
+	ADCSRA &= ~(1<<ADEN);
+
+	power_adc_disable();
+}
+
 uint8_t battery_is_charging()
 {
+#ifdef HW_VER_1_1
+	if (PINC & (1<<0))
+		return 0;
+	else
+		return 1;
+#else
 	if (PINC & (1<<0))
 		return 1;
 	else
 		return 0;
+#endif
+
 }
 
 void battery_start_measurement()

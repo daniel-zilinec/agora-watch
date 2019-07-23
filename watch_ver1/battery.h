@@ -9,6 +9,8 @@
 #define BATTERY_H_
 
 #include <avr/io.h>
+#include <avr/power.h>
+#include "main.h"
 
 // Values for % of charge calculation
 #define BATTERY_VOLTAGE_LOW		3500	// for low battery warning
@@ -18,7 +20,10 @@
 volatile uint16_t g_battery_voltage;
 
 // initialize ADC
-void battery_setup();
+void battery_enable_adc();
+
+// power off ADC
+void battery_disable_adc();
 
 // get status of battery charge pin
 

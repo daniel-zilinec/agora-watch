@@ -206,14 +206,22 @@ void app_status_screen(void)
 //	canvas_display_text(&image_buffer,&font24, "Uptime:02d 03h", 72, 10, 1);
 //	canvas_display_text(&image_buffer,&font24, "Charge:01d 02h", 96, 10, 1);
 
-	char text[6];
+	char text[8];
 
-	battery_get_voltage_string(text, 6);							// display battery voltage
+	// display battery voltage
+	battery_get_voltage_string(text, 6);
 	canvas_display_text(&image_buffer,&font24, text, 0, 10, 1);
 	canvas_display_text(&image_buffer,&font24, "Battery:", 0, 112, 1);
 
-	battery_get_percentage_string(text, 6);							// battery charge %
+	// battery charge %
+	battery_get_percentage_string(text, 6);
 	canvas_display_text(&image_buffer,&font24, text, 24, 10, 1);
+
+	// show temperature
+	// char s_temperature[8];
+	temperature_celsius_string(g_temperature_raw, text, 8);
+	canvas_display_text(&image_buffer,&font24, text, 24, 128, 1);
+
 
 	// show uptime from last charge
 	uint16_t days;

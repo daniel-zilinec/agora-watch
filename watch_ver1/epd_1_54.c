@@ -52,6 +52,15 @@ const unsigned char lut_partial_update[] =
 void epd_init(const unsigned char* lut, int8_t temperature)
 {
 	// initialize display
+
+	// for GDEH0213B72
+	spi_send_command(0x74);		// set analog block control
+    spi_send_data(0x54);
+	spi_send_command(0x7E);		// set digital block control
+    spi_send_data(0x3B);
+
+
+    // general
 	spi_send_command(DRIVER_OUTPUT_CONTROL);
     spi_send_data((EPD_HEIGHT - 1) & 0xFF);
     spi_send_data(((EPD_HEIGHT - 1) >> 8) & 0xFF);
@@ -62,7 +71,7 @@ void epd_init(const unsigned char* lut, int8_t temperature)
     spi_send_data(0x9D);
 
     spi_send_command(WRITE_VCOM_REGISTER);
-    spi_send_data(0x9C);                     // VCOM original_comment:7C original 0xA8
+    spi_send_data(VCOM_VALUE);                     // VCOM is different for every type of display (and even every batch)
 
     spi_send_command(SET_DUMMY_LINE_PERIOD);
     spi_send_data(0x1A);                     // 4 dummy lines per gate
@@ -96,6 +105,8 @@ void epd_init_partial(int8_t temperature)
 
 void epd_reset(void)
 {
+	// todo: wasting with power in delay loops
+
 	// Reset display
 	PORTB &= ~(1<<PORTB0);
 	_delay_ms(10);		// was 200
@@ -107,11 +118,16 @@ void epd_set_temperature(int8_t celsius)
 {
 	int16_t temperature_16 = celsius * 16;
 
+	// todo:
 	uint8_t msb = (temperature_16 >> 8) & 0xFF;
 	uint8_t lsb = temperature_16 & 0xF0;
 
 	// uint8_t msb = 0xe7;		// 0x19
 	// uint8_t lsb = 0x00;		// 0x00
+
+	// todo: for testing; 25 °C
+	msb = 0x19;
+	lsb = 0x00;
 
 	spi_send_command(TEMPERATURE_SENSOR_CONTROL);
 	spi_send_data(msb);
@@ -150,7 +166,11 @@ void epd_clear_frame_memory(uint8_t color)
 		spi_send_command(WRITE_RAM);
 		for (int i=0; i < (EPD_WIDTH / 8); ++i)
 		{
+#ifdef INVERTED_COLORS
+			spi_send_data(~value);
+#else
 			spi_send_data(value);
+#endif
 		}
 	}
 #endif
@@ -245,7 +265,11 @@ void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start
 
         for (int i = (start_x / 8); i <= (end_x / 8); i++)
         {
+#ifdef INVERTED_COLORS
+            spi_send_data(~image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+#else
             spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+#endif
         }
     }
 #endif
