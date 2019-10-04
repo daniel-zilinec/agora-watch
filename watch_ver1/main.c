@@ -158,8 +158,8 @@ int main(void)
 	 	temperature_get_raw(&g_temperature_raw);
 
     	epd_reset();
-    	epd_init_partial(DISPLAY_TEMPERTURE);
-    	//epd_init_full(DISPLAY_TEMPERTURE);
+    	//epd_init_partial(DISPLAY_TEMPERTURE);
+    	epd_init_full(DISPLAY_TEMPERTURE);
 
     	// is battery charging?
     	// todo: partially moved into pin change interrupt, need to be improved
