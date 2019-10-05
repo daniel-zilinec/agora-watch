@@ -17,14 +17,14 @@ void menu_show()
 
 	// re-initialize display
 	epd_reset();			// todo: wasting with power in delay loops
-	// epd_init_partial(DISPLAY_TEMPERTURE);
-	epd_init_full(DISPLAY_TEMPERTURE);
+	epd_init_partial(DISPLAY_TEMPERTURE);
+	//epd_init_full(DISPLAY_TEMPERTURE);
 
 	// clear display
 	epd_clear_frame_memory(COLOR_BLACK);
-	//epd_display_frame();
+	epd_display_frame();
 
-	epd_init_partial(DISPLAY_TEMPERTURE);
+	//epd_init_partial(DISPLAY_TEMPERTURE);
 
 	const uint8_t menu_item_count = MENU_ITEM_COUNT;
 	uint8_t menu_current_item = 0;

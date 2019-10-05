@@ -320,7 +320,7 @@ int main(void)
 	    		#else
 
 	    		epd_reset();
-	    		epd_init_full(DISPLAY_TEMPERTURE);
+	    		epd_init_partial(DISPLAY_TEMPERTURE);
 	    		epd_clear_frame_memory(COLOR_WHITE);
 	    		epd_display_frame();
 

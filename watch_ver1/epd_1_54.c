@@ -313,7 +313,7 @@ void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start
         }
     }
 
-    // for B72 display - probably for red color
+    // for B72 display - second set have to be inverted
     for (int j = start_y; j < end_y; j++)
     {
     	epd_set_memory_pointer(start_x, j);
@@ -323,11 +323,11 @@ void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start
         {
         	if (INVERTED_COLORS)
         	{
-        		spi_send_data((uint8_t) ~(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]));
+        		spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
         	}
         	else
         	{
-        		spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+        		spi_send_data((uint8_t) ~(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]));
         	}
         }
     }
