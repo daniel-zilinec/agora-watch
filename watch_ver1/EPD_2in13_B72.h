@@ -40,8 +40,8 @@
 #include <avr/io.h>
 
 // Display resolution
-#define EPD_WIDTH       122
-#define EPD_HEIGHT      250
+#define EPD_B72_WIDTH       122
+#define EPD_B72_HEIGHT      250
 
 #define FULL_UPDATE 0
 #define PART_UPDATE 1

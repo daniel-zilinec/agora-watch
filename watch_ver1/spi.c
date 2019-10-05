@@ -26,8 +26,13 @@ void spi_init(void)
 	PORTB |= (1<<PORTB2);
 
 	// SPI mode 0, MSB bit first, clock 500 kHz (1 MHz F_CPU / 2 SPI_prescaler)
-	SPCR = (1<<SPE) | (1<<MSTR);
-	SPSR = (1<< SPI2X);
+	 SPCR = (1<<SPE) | (1<<MSTR);
+	 SPSR = (1<< SPI2X);
+
+	// SPI mode 0, MSB bit first, clock 500 kHz (8 MHz F_CPU / 16 SPI_prescaler)
+	// SPCR = (1<<SPE) | (1<<MSTR);
+	//SPCR = (1<<SPE) | (1<<MSTR) | (1<<SPR0) |(1<<SPR1);
+
 }
 
 void spi_send_command(uint8_t command)

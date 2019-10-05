@@ -93,10 +93,12 @@ static void EPD_Reset(void)
 //    DEV_Digital_Write(EPD_RST_PIN, 1);
 //    DEV_Delay_ms(200);
 
-	PORTB &= ~(1<<PORTB0);
-	_delay_ms(10);		// was 200
 	PORTB |= (1<<PORTB0);
-	_delay_ms(10);		// was 200
+	_delay_ms(200);		// was 200
+	PORTB &= ~(1<<PORTB0);
+	_delay_ms(200);		// was 200
+	PORTB |= (1<<PORTB0);
+	_delay_ms(200);		// was 200
 }
 
 /******************************************************************************
@@ -293,12 +295,13 @@ static void EPD_SetCursor(int x, int y)
 void EPD_Clear(void)
 {
     uint16_t Width, Height;
-    Width = (EPD_WIDTH % 8 == 0) ? (EPD_WIDTH / 8 ) : (EPD_WIDTH / 8 + 1);
-    Height = EPD_HEIGHT;
+    Width = (EPD_B72_WIDTH % 8 == 0) ? (EPD_B72_WIDTH / 8 ) : (EPD_B72_WIDTH / 8 + 1);
+    Height = EPD_B72_HEIGHT;
     EPD_SendCommand(0x24);
     for (uint16_t j = 0; j < Height; j++) {
         for (uint16_t i = 0; i < Width; i++) {
             EPD_SendData(0XFF);
+        	// EPD_SendData(0X00);
         }
     }
     EPD_TurnOnDisplay();
@@ -311,8 +314,8 @@ void EPD_Clear(void)
 void EPD_Display(uint8_t *Image)
 {
     uint16_t Width, Height;
-    Width = (EPD_WIDTH % 8 == 0) ? (EPD_WIDTH / 8 ) : (EPD_WIDTH / 8 + 1);
-    Height = EPD_HEIGHT;
+    Width = (EPD_B72_WIDTH % 8 == 0) ? (EPD_B72_WIDTH / 8 ) : (EPD_B72_WIDTH / 8 + 1);
+    Height = EPD_B72_HEIGHT;
 
     EPD_SendCommand(0x24);
     for (uint16_t j = 0; j < Height; j++) {
@@ -343,8 +346,8 @@ void EPD_DisplayWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, uint16
 void EPD_DisplayPart(uint8_t *Image)
 {
     uint16_t Width, Height;
-    Width = (EPD_WIDTH % 8 == 0) ? (EPD_WIDTH / 8 ) : (EPD_WIDTH / 8 + 1);
-    Height = EPD_HEIGHT;
+    Width = (EPD_B72_WIDTH % 8 == 0) ? (EPD_B72_WIDTH / 8 ) : (EPD_B72_WIDTH / 8 + 1);
+    Height = EPD_B72_HEIGHT;
     EPD_SendCommand(0x24);
     for (uint16_t j = 0; j < Height; j++) {
         for (uint16_t i = 0; i < Width; i++) {
