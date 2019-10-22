@@ -24,7 +24,8 @@ void menu_show()
 	epd_clear_frame_memory(COLOR_BLACK);
 	epd_display_frame();
 
-	//epd_init_partial(DISPLAY_TEMPERTURE);
+	// epd_reset();
+	// epd_init_partial(DISPLAY_TEMPERTURE);
 
 	const uint8_t menu_item_count = MENU_ITEM_COUNT;
 	uint8_t menu_current_item = 0;

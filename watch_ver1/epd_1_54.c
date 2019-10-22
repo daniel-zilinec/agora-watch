@@ -247,6 +247,9 @@ void epd_display_frame(void)
 //	epd_wait_until_idle();
 
 	EPD_TurnOnDisplay();
+
+	// two times for better contrast
+	// EPD_TurnOnDisplay();
 }
 
 void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start_y, uint16_t width, uint16_t height)

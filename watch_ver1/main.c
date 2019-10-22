@@ -161,13 +161,13 @@ int main(void)
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
 
 	// initialize time
-	g_time.hours = 12;
-	g_time.minutes = 22;
+	g_time.hours = 20;
+	g_time.minutes = 23;
 	g_time.seconds = 0;
 
 	// initialize date
-	g_time.day = 19;
-	g_time.month = 6;
+	g_time.day = 13;
+	g_time.month = 10;
 	g_time.year = 2019;
 
 	// set default time for alarm and disable it
@@ -297,7 +297,8 @@ int main(void)
 	    		menu_show();
 
 	    		// clear screen - paint it all black
-	    		epd_clear_frame_memory(COLOR_BLACK);
+	    		// epd_clear_frame_memory(COLOR_BLACK);
+	    		epd_clear_frame_memory(COLOR_WHITE);
 	    		epd_display_frame();
 
 	    		display_refresh_needed = 1;
