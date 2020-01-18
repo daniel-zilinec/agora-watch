@@ -9,10 +9,10 @@
  *      Fuses:
  *      EXT = 0xFF
  *      HIGH = 0xD9
- *      LOW = 0x62	(0xE2 with CKDIV8 disabled)
+ *      LOW = 0xE2
  *
  *      - Brown-out detection disabled
- *      - Internal 8 MHz RC oscillator & CKDIV8 enabled -> F_CPU = 1 MHz
+ *      - Internal 8 MHz RC oscillator & CKDIV8 disabled -> F_CPU = 8 MHz
  */
 
 #include <avr/io.h>
