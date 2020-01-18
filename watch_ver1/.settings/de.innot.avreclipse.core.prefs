@@ -1,4 +1,4 @@
-avrtarget/ClockFrequency=1000000
+avrtarget/ClockFrequency=8000000
 avrtarget/ExtRAMSize=0
 avrtarget/ExtendedRAM=false
 avrtarget/MCUType=atmega328p
@@ -17,7 +17,7 @@ avrtarget/avrdude/Fuses/UseFile=false
 avrtarget/avrdude/Fuses/Write=true
 avrtarget/avrdude/NoChipErase=false
 avrtarget/avrdude/NoSigCheck=true
-avrtarget/avrdude/NoVerify=true
+avrtarget/avrdude/NoVerify=false
 avrtarget/avrdude/NoWrite=false
 avrtarget/avrdude/OtherOptions=
 avrtarget/avrdude/ProgrammerID=programmerconfig.1

@@ -30,12 +30,14 @@
 #include "fonts.h"
 #include "spi.h"
 #include "epd_1_54.h"
+#include "EPD_2in13_B72.h"
 #include "canvas.h"
 #include "basic_apps.h"
 #include "timers.h"
 #include "temperature.h"
 
-
+#include <avr/pgmspace.h>
+#include "time_font.h"
 
 
 // TODO: move backlight enabling after every keypress into interrupt
@@ -59,6 +61,59 @@ ISR(TIMER2_OVF_vect);
 
 int main(void)
 {
+
+	// B72 test
+/*
+	uint8_t test_img[64] = { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF};
+	spi_init();
+	EPD_Init(FULL_UPDATE);
+	EPD_Clear();
+//	_delay_ms(1000);
+//	while (1)
+	{
+		//canvas_display_text(&image_buffer,&font24, "charging ", 96, 82, 0);
+		//EPD_DisplayWindows((uint8_t *)IMAGE_DATA_2IN13, 0, 170, 122, 220);
+		//EPD_Display((uint8_t *)IMAGE_DATA_2IN13);
+		//EPD_TurnOnDisplay();
+		//_delay_ms(3000);
+
+		EPD_Clear();
+		_delay_ms(3000);
+	}
+
+	EPD_Init(PART_UPDATE);
+	//EPD_Clear();
+	while (1)
+	{
+		//EPD_DisplayPart((uint8_t *)IMAGE_DATA_2IN13);
+
+	    //EPD_DisplayPartWindows((uint8_t *)IMAGE_DATA_2IN13, 0, 0, 64, 64);
+		//canvas_read_from_flash(&image_buffer, &time_font[0], 0);
+		canvas_display_text(&image_buffer,&font24, "charging ", 96, 82, 0);
+		//EPD_DisplayPartWindows(image_buffer.buffer, 0, 0, image_buffer.width, image_buffer.height);
+	    EPD_TurnOnDisplay();
+
+		_delay_ms(3000);
+
+	    //EPD_DisplayPartWindows((uint8_t *)test_img, 0, 0, 64, 64);
+		//canvas_display_text(&image_buffer,&font24, "fun123   ", 96, 82, 0);
+		watchface_show(g_current_watchface);			// put time into framebuffer
+
+		//canvas_read_from_flash(&image_buffer, &time_font[1], 0);
+		//EPD_DisplayPartWindows(image_buffer.buffer, 0, 0, image_buffer.width, image_buffer.height);
+
+	    EPD_TurnOnDisplay();
+
+		_delay_ms(3000);
+
+		//EPD_Clear();
+		//_delay_ms(5000);
+	}
+
+	while (1);
+*/
+
+
 	// -- Initialize e-paper display --
 	spi_init();
 	epd_reset();
@@ -90,6 +145,8 @@ int main(void)
 	// clear one framebuffer and do full-refresh to physically clear display; second framebuffer will be cleared later
     epd_clear_frame_memory(COLOR_WHITE);
     epd_display_frame();
+
+    // EPD_Clear();
 #endif
 
     // initialize Timer/Counter 2 in asynchronous mode with external 32.768 kHz crystal
@@ -104,13 +161,13 @@ int main(void)
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
 
 	// initialize time
-	g_time.hours = 12;
-	g_time.minutes = 22;
+	g_time.hours = 20;
+	g_time.minutes = 23;
 	g_time.seconds = 0;
 
 	// initialize date
-	g_time.day = 19;
-	g_time.month = 6;
+	g_time.day = 13;
+	g_time.month = 10;
 	g_time.year = 2019;
 
 	// set default time for alarm and disable it
@@ -157,9 +214,10 @@ int main(void)
 
 	 	temperature_get_raw(&g_temperature_raw);
 
-    	epd_reset();
+    	// epd_reset();
     	epd_init_partial(DISPLAY_TEMPERTURE);
     	//epd_init_full(DISPLAY_TEMPERTURE);
+
 
     	// is battery charging?
     	// todo: partially moved into pin change interrupt, need to be improved
@@ -220,7 +278,7 @@ int main(void)
 	    epd_display_frame();		// display framebuffer on display
 	    display_refresh_needed = 0;
 
-	    epd_deep_sleep();		// put display to sleep mode to conserve energy
+	    // epd_deep_sleep();		// todo: put display to sleep mode to conserve energy
 
 	    while (!display_refresh_needed)		// loop until display refresh needed
 	    {
@@ -239,7 +297,8 @@ int main(void)
 	    		menu_show();
 
 	    		// clear screen - paint it all black
-	    		epd_clear_frame_memory(COLOR_BLACK);
+	    		// epd_clear_frame_memory(COLOR_BLACK);
+	    		epd_clear_frame_memory(COLOR_WHITE);
 	    		epd_display_frame();
 
 	    		display_refresh_needed = 1;
@@ -262,9 +321,9 @@ int main(void)
 	    		#else
 
 	    		epd_reset();
-	    		epd_init_full(DISPLAY_TEMPERTURE);
+	    		epd_init_partial(DISPLAY_TEMPERTURE);
 	    		epd_clear_frame_memory(COLOR_WHITE);
-
+	    		epd_display_frame();
 
 				#endif
 
@@ -381,5 +440,3 @@ ISR (ADC_vect)
 	g_battery_voltage = ADC;
 	battery_disable_adc();
 }
-
-

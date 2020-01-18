@@ -8,6 +8,7 @@
 #include "epd_1_54.h"
 #include "spi.h"
 #include <util/delay.h>	// todo: remove this with _delay_ms()
+#include "EPD_2in13_B72.h"
 
 #ifdef EPD_SIZE_1_54
 
@@ -95,12 +96,20 @@ void epd_init(const unsigned char* lut, int8_t temperature)
 
 void epd_init_full(int8_t temperature)
 {
-	epd_init(lut_full_update, temperature);
+	// for old display
+	//epd_init(lut_full_update, temperature);
+
+	// for B72
+	EPD_Init(FULL_UPDATE);
 }
 
 void epd_init_partial(int8_t temperature)
 {
-	epd_init(lut_partial_update, temperature);
+	// for old display
+	// epd_init(lut_partial_update, temperature);
+
+	// for B72
+	EPD_Init(PART_UPDATE);
 }
 
 void epd_reset(void)
@@ -108,6 +117,8 @@ void epd_reset(void)
 	// todo: wasting with power in delay loops
 
 	// Reset display
+	PORTB |= (1<<PORTB0);
+	_delay_ms(10);		// was 200
 	PORTB &= ~(1<<PORTB0);
 	_delay_ms(10);		// was 200
 	PORTB |= (1<<PORTB0);
@@ -158,6 +169,7 @@ void epd_clear_frame_memory(uint8_t color)
 #endif
 
 #ifdef EPD_SIZE_2_13
+
 	epd_set_memory_area(0, 0, EPD_WIDTH -1, EPD_HEIGHT -1);
 	// set the frame memory line by line
 	for (int j=0; j < EPD_HEIGHT; ++j)
@@ -166,13 +178,35 @@ void epd_clear_frame_memory(uint8_t color)
 		spi_send_command(WRITE_RAM);
 		for (int i=0; i < (EPD_WIDTH / 8); ++i)
 		{
-#ifdef INVERTED_COLORS
-			spi_send_data(~value);
-#else
-			spi_send_data(value);
-#endif
+			if (INVERTED_COLORS)
+			{
+				spi_send_data((uint8_t) (~value));
+			}
+			else
+			{
+				spi_send_data(value);
+			}
 		}
 	}
+
+	// the second data have to be inverted
+	for (int j=0; j < EPD_HEIGHT; ++j)
+	{
+		epd_set_memory_pointer(0, j);
+		spi_send_command(0x26);
+		for (int i=0; i < (EPD_WIDTH / 8); ++i)
+		{
+			if (INVERTED_COLORS)
+			{
+				spi_send_data(value);
+			}
+			else
+			{
+				spi_send_data((uint8_t) (~value));
+			}
+		}
+	}
+	// EPD_Clear();
 #endif
 
 }
@@ -205,11 +239,17 @@ void epd_set_memory_area(uint16_t start_x, uint16_t start_y, uint16_t end_x, uin
 
 void epd_display_frame(void)
 {
-	spi_send_command(DISPLAY_UPDATE_CONTROL_2);
-	spi_send_data(0xC4);
-	spi_send_command(MASTER_ACTIVATION);
-	spi_send_command(TERMINATE_FRAME_READ_WRITE);
-	epd_wait_until_idle();
+	// old version
+//	spi_send_command(DISPLAY_UPDATE_CONTROL_2);
+//	spi_send_data(0xC4);
+//	spi_send_command(MASTER_ACTIVATION);
+//	spi_send_command(TERMINATE_FRAME_READ_WRITE);
+//	epd_wait_until_idle();
+
+	EPD_TurnOnDisplay();
+
+	// two times for better contrast
+	// EPD_TurnOnDisplay();
 }
 
 void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start_y, uint16_t width, uint16_t height)
@@ -265,11 +305,33 @@ void epd_set_frame(const image_buffer_t *image, uint16_t start_x, uint16_t start
 
         for (int i = (start_x / 8); i <= (end_x / 8); i++)
         {
-#ifdef INVERTED_COLORS
-            spi_send_data(~image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
-#else
-            spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
-#endif
+        	if (INVERTED_COLORS)
+        	{
+        		spi_send_data((uint8_t) ~(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]));
+        	}
+        	else
+        	{
+        		spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+        	}
+        }
+    }
+
+    // for B72 display - second set have to be inverted
+    for (int j = start_y; j < end_y; j++)
+    {
+    	epd_set_memory_pointer(start_x, j);
+    	spi_send_command(0x26);
+
+        for (int i = (start_x / 8); i <= (end_x / 8); i++)
+        {
+        	if (INVERTED_COLORS)
+        	{
+        		spi_send_data(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]);
+        	}
+        	else
+        	{
+        		spi_send_data((uint8_t) ~(image->buffer[(i - (start_x / 8)) + (j - start_y) * (width / 8)]));
+        	}
         }
     }
 #endif

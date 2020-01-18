@@ -8,6 +8,7 @@
 #include "canvas.h"
 #include <avr/pgmspace.h>
 #include "epd_1_54.h"
+#include "EPD_2in13_B72.h"
 
 uint8_t g_dirty_framebuffers;
 
@@ -73,7 +74,12 @@ void canvas_read_from_flash(image_buffer_t *image, time_font_t *font, const uint
 void canvas_display_from_flash(image_buffer_t *image, time_font_t *font, uint16_t x, uint16_t y, const uint8_t inverted)
 {
 	canvas_read_from_flash(image, font, inverted);
-	epd_set_frame(image, x, y, image->width, image->height);
+
+	// old display
+	// epd_set_frame(image, x, y, image->width, image->height);
+
+	// B72 display
+	EPD_DisplayPartWindows(image->buffer, x, y, x + image->width, y + image->height);
 }
 
 void canvas_read_char_from_flash(image_buffer_t *image, font_t *font, uint8_t ascii_char, const uint8_t inverted)
@@ -105,7 +111,12 @@ void canvas_read_char_from_flash(image_buffer_t *image, font_t *font, uint8_t as
 void canvas_display_char_from_flash(image_buffer_t *image, font_t *font, uint8_t ascii_char, uint16_t x, uint16_t y, const uint8_t inverted)
 {
 	canvas_read_char_from_flash(image, font, ascii_char, inverted);
-	epd_set_frame(image, x, y, image->width, image->height);
+
+	// old display
+	// epd_set_frame(image, x, y, image->width, image->height);
+
+	// B72 display
+	EPD_DisplayPartWindows(image->buffer, x, y, x + image->width, y + image->height);
 }
 
 void canvas_read_string_from_flash(image_buffer_t *image, font_t *font, const char * text, const uint8_t inverted)
@@ -152,5 +163,10 @@ void canvas_read_string_from_flash(image_buffer_t *image, font_t *font, const ch
 void canvas_display_text(image_buffer_t *image, font_t *font, const char * text, uint16_t x, uint16_t y, const uint8_t inverted)
 {
 	canvas_read_string_from_flash(image, font, text, inverted);
-	epd_set_frame(image, x, y, image->width, image->height);
+
+	// old display
+	// epd_set_frame(image, x, y, image->width, image->height);
+
+	// B72 display
+	EPD_DisplayPartWindows(image->buffer, x, y, x + image->width, y + image->height);
 }

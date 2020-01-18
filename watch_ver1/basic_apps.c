@@ -32,6 +32,7 @@ void app_set_time(volatile time_t *time)
 	int current_digit = 1;
 	while (current_digit <= 4)
 	{
+
     	if (g_dirty_framebuffers > 0)				// clean framebuffer when needed
     	{
     		epd_clear_frame_memory(COLOR_WHITE);
@@ -72,6 +73,7 @@ void app_set_time(volatile time_t *time)
 	    		new_time.hours = 23;
 			}
 	    	++ current_digit;
+	    	g_dirty_framebuffers = 1;
 	    }
 
 	    if (button2_state())				// BUTTON 2	- cancel
