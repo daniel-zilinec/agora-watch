@@ -28,6 +28,12 @@ void temperature_enable();
 // Disable power for I2C module
 void temperature_disable();
 
+// Put LM75B to sleep
+void temperature_sleep();
+
+// Wake up LM75B
+void temperature_wakeup();
+
 // void temperature_start_measurement();
 
 uint8_t temperature_get_raw(uint16_t *t);

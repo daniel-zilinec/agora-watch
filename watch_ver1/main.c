@@ -49,6 +49,7 @@
 volatile uint8_t display_refresh_needed;
 volatile uint16_t g_battery_voltage;
 volatile uint8_t g_battery_charging;
+volatile uint8_t g_temperature_wkup;		// flag if temperature sensor wakeup is needed
 
 uint8_t g_battery_low_flag, g_battery_discharged_flag;
 
@@ -201,6 +202,7 @@ int main(void)
 	g_battery_low_flag = 0;
 	g_battery_discharged_flag = 0;
 	g_battery_charging = 0;
+	g_temperature_wkup = 0;
 
 	button_init();		// initialize buttons
 	temperature_enable();
@@ -213,6 +215,8 @@ int main(void)
 	 	battery_start_measurement();
 
 	 	temperature_get_raw(&g_temperature_raw);
+	 	temperature_sleep();
+
 
     	// epd_reset();
     	epd_init_partial(DISPLAY_TEMPERTURE);
@@ -283,6 +287,12 @@ int main(void)
 	    while (!display_refresh_needed)		// loop until display refresh needed
 	    {
 	    	sleep_mode();			// Enter sleep mode - POWER SAVE mode
+	    	if (g_temperature_wkup)
+	    	{
+	    		temperature_enable();		// TWI reset is needed after CPU wake-up
+	    		temperature_wakeup();
+	    		g_temperature_wkup = 0;
+	    	}
 
 	    	if (button_pressed())
 	    	{
@@ -354,8 +364,19 @@ ISR(TIMER2_OVF_vect)
 
 	++g_time.seconds;
 
+
 #ifdef FAST_TIME
-	if (g_time.seconds > 10)
+	if (g_time.seconds == 9)
+#endif
+#ifndef FAST_TIME
+	if (g_time.seconds == 59)
+#endif
+	{
+		g_temperature_wkup = 1;
+	}
+
+#ifdef FAST_TIME
+	if (g_time.seconds > 9)
 #endif
 #ifndef FAST_TIME
 	if (g_time.seconds > 59)
