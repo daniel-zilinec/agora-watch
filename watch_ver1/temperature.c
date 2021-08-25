@@ -30,15 +30,149 @@ void temperature_disable()
 	power_twi_disable();
 }
 
+void temperature_sleep()
+{
+	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN) ; // send start condition
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_START)
+	{
+		// send address
+		TWDR = TMP75_ADDR | TW_WRITE;		// send TWI address (write operation)
+		TWCR = (1 << TWINT) | (1 << TWEN);	// start transmission
+	}
+	else
+		return;
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_SLA_ACK)		// if Master Write / slave ACK
+	{
+		TWDR = 0x01;	// Set pointer to 1 - config register
+		TWCR = (1 << TWINT) | (1 << TWEN);	//
+	}
+	else
+		return;
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_DATA_ACK)		// if Master Write / slave ACK
+	{
+		TWDR = 0x01;	// Write 0x01 to configuration register - put device to shutdown mode
+		TWCR = (1 << TWINT) | (1 << TWEN);	// start transmission
+	}
+	else
+		return;
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_DATA_ACK)		// if Master Write / slave ACK
+	{
+		TWCR = (1<< TWSTO) | (1 << TWINT) | (1 << TWEN);	// send STOP bit
+	}
+	else
+		return;
+}
+
+
+void temperature_wakeup()
+{
+	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN) ; // send start condition
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_START)
+	{
+		// send address
+		TWDR = TMP75_ADDR | TW_WRITE;		// send TWI address (write operation)
+		TWCR = (1 << TWINT) | (1 << TWEN);	// start transmission
+	}
+	else
+		return;
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_SLA_ACK)		// if Master Write / slave ACK
+	{
+		TWDR = 0x01;	// Set pointer to 1 - config register
+		TWCR = (1 << TWINT) | (1 << TWEN);	//
+	}
+	else
+		return;
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_DATA_ACK)		// if Master Write / slave ACK
+	{
+		TWDR = 0x00;	// Write 0x00 to configuration register - wake up from shutdown mode
+		TWCR = (1 << TWINT) | (1 << TWEN);	// start transmission
+	}
+	else
+		return;
+
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_DATA_ACK)		// if Master Write / slave ACK
+	{
+		TWCR = (1<< TWSTO) | (1 << TWINT) | (1 << TWEN);	// send STOP bit
+	}
+	else
+		return;
+}
+
+
+void temperature_set_pointer(uint8_t ptr)
+{
+
+}
+
 uint8_t temperature_get_raw(uint16_t *t)
 {
 	uint8_t msb, lsb;
 
 	TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN) ; // send start condition
 
+
+	// ---- DEVICE ADDRESS ----
 	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
 
 	if ((TWSR & 0xF8) == TW_START)
+	{
+		// send address
+		TWDR = TMP75_ADDR | TW_WRITE;		// send TWI address (read operation)
+		TWCR = (1 << TWINT) | (1 << TWEN);	// start transmission
+	}
+	else
+		return TMP_ERROR;
+
+
+	// ---- WRITE POINTER REGISTER ----
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_SLA_ACK)		// if Master Write / slave ACK
+	{
+		TWDR = 0x00;	// Set pointer to 0 - temperature register
+		TWCR = (1 << TWINT) | (1 << TWEN);	// send data
+	}
+	else
+		return TMP_ERROR;
+
+	// ---- SEND REPEATED START ----
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_MT_DATA_ACK)		// if Master Transmit data ACK
+	{
+		TWCR = (1 << TWSTA) | (1 << TWINT) | (1 << TWEN);	// send repeated start bit
+	}
+	else
+		return TMP_ERROR;
+
+
+	// ---- DEVICE ADDRESS ----
+	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
+
+	if ((TWSR & 0xF8) == TW_REP_START)		// repeated start transmitted
 	{
 		// send address
 		TWDR = TMP75_ADDR | TW_READ;		// send TWI address (read operation)
@@ -47,7 +181,7 @@ uint8_t temperature_get_raw(uint16_t *t)
 	else
 		return TMP_ERROR;
 
-
+	// ---- READ DATA ----
 
 	while (!(TWCR & (1 << TWINT)));		// wait for TWI flag
 
