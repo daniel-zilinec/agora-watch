@@ -195,18 +195,11 @@ void app_set_time(volatile time_t *time)
 
 void app_status_screen(void)
 {
-	epd_reset();			// todo: wasting with power in delay loops
 	epd_init_partial(DISPLAY_TEMPERTURE);
 	epd_clear_frame_memory(COLOR_WHITE);
 
 	// wait until all buttons are depressed
 	while (button_pressed());
-
-//	canvas_display_text(&image_buffer,&font24, "Battery: 3.86V", 0, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "60%", 24, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "Temp:     24 C", 48, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "Uptime:02d 03h", 72, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "Charge:01d 02h", 96, 10, 1);
 
 	char text[8];
 
@@ -273,12 +266,6 @@ void app_status_screen(void)
 
 	// wait until all buttons are depressed
 	while (button_pressed());
-}
-
-
-void app_bluetooth()
-{
-
 }
 
 void backlight_enable(uint8_t timeout)

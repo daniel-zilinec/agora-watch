@@ -42,9 +42,6 @@
 
 // TODO: move backlight enabling after every keypress into interrupt
 // TODO: alarm - snooze & disable vibrating alarm
-// TODO: Add FW version from SVN
-
-
 
 volatile uint8_t display_refresh_needed;
 volatile uint16_t g_battery_voltage;
@@ -55,68 +52,10 @@ uint8_t g_battery_low_flag, g_battery_discharged_flag;
 
 image_buffer_t image_buffer;
 
-// ISR(TIMER1_COMPA_vect);
 ISR(TIMER2_OVF_vect);
-
-
 
 int main(void)
 {
-
-	// B72 test
-/*
-	uint8_t test_img[64] = { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF};
-	spi_init();
-	EPD_Init(FULL_UPDATE);
-	EPD_Clear();
-//	_delay_ms(1000);
-//	while (1)
-	{
-		//canvas_display_text(&image_buffer,&font24, "charging ", 96, 82, 0);
-		//EPD_DisplayWindows((uint8_t *)IMAGE_DATA_2IN13, 0, 170, 122, 220);
-		//EPD_Display((uint8_t *)IMAGE_DATA_2IN13);
-		//EPD_TurnOnDisplay();
-		//_delay_ms(3000);
-
-		EPD_Clear();
-		_delay_ms(3000);
-	}
-
-	EPD_Init(PART_UPDATE);
-	//EPD_Clear();
-	while (1)
-	{
-		//EPD_DisplayPart((uint8_t *)IMAGE_DATA_2IN13);
-
-	    //EPD_DisplayPartWindows((uint8_t *)IMAGE_DATA_2IN13, 0, 0, 64, 64);
-		//canvas_read_from_flash(&image_buffer, &time_font[0], 0);
-		canvas_display_text(&image_buffer,&font24, "charging ", 96, 82, 0);
-		//EPD_DisplayPartWindows(image_buffer.buffer, 0, 0, image_buffer.width, image_buffer.height);
-	    EPD_TurnOnDisplay();
-
-		_delay_ms(3000);
-
-	    //EPD_DisplayPartWindows((uint8_t *)test_img, 0, 0, 64, 64);
-		//canvas_display_text(&image_buffer,&font24, "fun123   ", 96, 82, 0);
-		watchface_show(g_current_watchface);			// put time into framebuffer
-
-		//canvas_read_from_flash(&image_buffer, &time_font[1], 0);
-		//EPD_DisplayPartWindows(image_buffer.buffer, 0, 0, image_buffer.width, image_buffer.height);
-
-	    EPD_TurnOnDisplay();
-
-		_delay_ms(3000);
-
-		//EPD_Clear();
-		//_delay_ms(5000);
-	}
-
-	while (1);
-*/
-
-
-
-
 	// reset software timers
 	timers_reset();
 
@@ -180,11 +119,10 @@ int main(void)
 	// power_twi_disable();
 	power_usart0_disable();
 
-
 	// Enable pull-up on all unused pins to define voltage on pin (decrease power consumption)
-//	PORTB |= (1<<PORTB6) | (1<<PORTB7);
-//	PORTC |= 0xFF;
-//	PORTD |= (1<<PORTD6) | (1<<PORTD5) | (1<<PORTD4) | (1<<PORTD3) | (1<<PORTD2) | (1<<PORTD1) | (1<<PORTD0);
+	PORTB |= (1<<PORTB6) | (1<<PORTB7);
+	PORTC |= 0xFF;
+	PORTD |= (1<<PORTD6) | (1<<PORTD5) | (1<<PORTD4) | (1<<PORTD3) | (1<<PORTD2) | (1<<PORTD1) | (1<<PORTD0);
 
 	g_battery_voltage = 0;
 	g_battery_low_flag = 0;
@@ -204,14 +142,9 @@ int main(void)
 	//epd_init_partial(DISPLAY_TEMPERTURE);
 
     // clear image on display
-	// todo: improve this
-#ifdef CLEAR_DISPLAY_ON_START
 	// clear one framebuffer and do full-refresh to physically clear display; second framebuffer will be cleared later
     epd_clear_frame_memory(COLOR_WHITE);
     epd_display_frame();
-
-    // EPD_Clear();
-#endif
 
 	while (1)
 	{
@@ -221,11 +154,7 @@ int main(void)
 	 	temperature_get_raw(&g_temperature_raw);
 	 	temperature_sleep();
 
-
-    	// epd_reset();
     	epd_init_partial(DISPLAY_TEMPERTURE);
-    	//epd_init_full(DISPLAY_TEMPERTURE);
-
 
     	// is battery charging?
     	// todo: partially moved into pin change interrupt, need to be improved
@@ -310,8 +239,6 @@ int main(void)
 
 	    		menu_show();
 
-	    		// clear screen - paint it all black
-	    		// epd_clear_frame_memory(COLOR_BLACK);
 	    		epd_clear_frame_memory(COLOR_WHITE);
 	    		epd_display_frame();
 

@@ -25,7 +25,6 @@
 #define	MENU_ITEM_ALARM_ENABLED	1
 #define	MENU_ITEM_SET_TIME		2
 #define	MENU_ITEM_SHOW_INFO		3
-#define MENU_ITEM_BLUETOOTH		4
 
 #else
 #define MENU_ITEM_COUNT			2

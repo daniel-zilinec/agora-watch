@@ -13,19 +13,12 @@ void menu_show()
 	// wait until all buttons are depressed
 	while (button_pressed());
 
-
-
 	// re-initialize display
-	epd_reset();			// todo: wasting with power in delay loops
 	epd_init_partial(DISPLAY_TEMPERTURE);
-	//epd_init_full(DISPLAY_TEMPERTURE);
 
 	// clear display
 	epd_clear_frame_memory(COLOR_BLACK);
 	epd_display_frame();
-
-	// epd_reset();
-	// epd_init_partial(DISPLAY_TEMPERTURE);
 
 	const uint8_t menu_item_count = MENU_ITEM_COUNT;
 	uint8_t menu_current_item = 0;
@@ -91,11 +84,6 @@ void menu_show()
 				case MENU_ITEM_SHOW_INFO:
 					app_status_screen();
 					break;
-
-				case MENU_ITEM_BLUETOOTH:
-					app_bluetooth();
-					break;
-
 			}
 		}
 
