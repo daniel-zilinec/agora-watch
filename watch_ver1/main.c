@@ -162,8 +162,8 @@ int main(void)
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
 
 	// initialize time
-	g_time.hours = 20;
-	g_time.minutes = 23;
+	g_time.hours = 12;
+	g_time.minutes = 34;
 	g_time.seconds = 0;
 
 	// initialize date
@@ -172,7 +172,7 @@ int main(void)
 	g_time.year = 2019;
 
 	// set default time for alarm and disable it
-	g_alarm_time.hours = 05;
+	g_alarm_time.hours = 12;
 	g_alarm_time.minutes = 35;
 	g_alarm_time.seconds = 0;
 	g_alarm_enabled = 0;

@@ -31,7 +31,7 @@ void menu_show()
 	uint8_t menu_current_item = 0;
 
 	// CLOCK menu loop
-#ifdef DEVICE_TYPE_WATCH
+#ifdef DEVICE_HAS_ALARM
 	while (1)
 	{
 		epd_clear_frame_memory(COLOR_WHITE);
@@ -98,9 +98,8 @@ void menu_show()
 
 			}
 		}
-#endif
 
-#ifdef DEVICE_TYPE_CLOCK
+#else
 		while (1)
 		{
 			epd_clear_frame_memory(COLOR_WHITE);
