@@ -115,11 +115,7 @@ int main(void)
 */
 
 
-	// -- Initialize e-paper display --
-	spi_init();
-	epd_reset();
-	epd_init_full(DISPLAY_TEMPERTURE);
-	//epd_init_partial(DISPLAY_TEMPERTURE);
+
 
 	// reset software timers
 	timers_reset();
@@ -140,15 +136,6 @@ int main(void)
     alert_disable();
 #endif
 
-    // clear image on display
-	// todo: improve this
-#ifdef CLEAR_DISPLAY_ON_START
-	// clear one framebuffer and do full-refresh to physically clear display; second framebuffer will be cleared later
-    epd_clear_frame_memory(COLOR_WHITE);
-    epd_display_frame();
-
-    // EPD_Clear();
-#endif
 
     // initialize Timer/Counter 2 in asynchronous mode with external 32.768 kHz crystal
     ASSR = (1<<AS2);				// enable asynchronous operation - this bit must be set before TCCR2x
@@ -160,6 +147,7 @@ int main(void)
     PCICR = (1<<PCIE2) | (1<<PCIE1);
     PCMSK2 |= (1<<PCINT19) | (1<<PCINT18);
     PCMSK1 |= (1<<PCINT10) | (1<<PCINT9);
+
 
 	// initialize time
 	g_time.hours = 12;
@@ -208,6 +196,22 @@ int main(void)
 	temperature_enable();
 
 	sei();		// enable global interrupts
+
+	// -- Initialize e-paper display --
+	spi_init();
+	epd_reset();
+	epd_init_full(DISPLAY_TEMPERTURE);
+	//epd_init_partial(DISPLAY_TEMPERTURE);
+
+    // clear image on display
+	// todo: improve this
+#ifdef CLEAR_DISPLAY_ON_START
+	// clear one framebuffer and do full-refresh to physically clear display; second framebuffer will be cleared later
+    epd_clear_frame_memory(COLOR_WHITE);
+    epd_display_frame();
+
+    // EPD_Clear();
+#endif
 
 	while (1)
 	{
@@ -282,7 +286,7 @@ int main(void)
 	    epd_display_frame();		// display framebuffer on display
 	    display_refresh_needed = 0;
 
-	    // epd_deep_sleep();		// todo: put display to sleep mode to conserve energy
+	    epd_deep_sleep();		// put display to sleep mode to conserve energy
 
 	    while (!display_refresh_needed)		// loop until display refresh needed
 	    {
