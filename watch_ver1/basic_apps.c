@@ -288,11 +288,13 @@ void alert_enable(uint8_t timeout)
 {
 	g_sleep_allowed = 0;
 
-	// Initiate TC1
+	// Initiate TC1 in CTC (Clear Timer on Compare match) mode
 	power_timer1_enable();
-	TCCR1B |= (1 << CS11) | (1<<CS10);		// clk_io / 64
+	OCR1A = 0x2000;				// count to this number, 0xFFFF is cca 1 second
+	TCCR1B |= (1<WGM12) | (1 << CS11) | (1<<CS10);		// CTC mode | clk_io / 64
 	TCNT1 = 0;
-	TIMSK1 |= (1 << TOIE1);
+	TIMSK1 |=  (1 << OCIE1A);
+
 
 	sw_timer[SW_TIMER_ALERT] = timeout;
 }

@@ -47,7 +47,7 @@ uint8_t g_battery_low_flag, g_battery_discharged_flag;
 image_buffer_t image_buffer;
 
 ISR(TIMER2_OVF_vect);
-ISR(TIMER1_OVF_vect);
+ISR(TIMER1_COMPA_vect);
 
 int main(void)
 {
@@ -361,9 +361,10 @@ ISR(TIMER2_OVF_vect)
 
 }
 
-ISR(TIMER1_OVF_vect)
+ISR(TIMER1_COMPA_vect)
 {
 	PORTD ^= (1<<PORTD5);
+	TCNT1 = 0;					// it seems that the counter is not reset at OCR1A and counts further, so I need to reset it
 }
 
 ISR (PCINT1_vect)
