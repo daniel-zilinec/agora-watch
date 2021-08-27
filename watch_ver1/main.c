@@ -62,7 +62,7 @@ int main(void)
 	// initiate port as output for vibration motor and backlight
 	DDRD |= (1<<DDD5) | (1<<DDD6);
 
-	// Hold LDO enabled even without VIN voltage (LDE_EN)
+	// Hold LDO enabled even without VIN voltage (LDE_EN). Only for PCB v1.0, this pin is connected nowhere on PCB v1.1
 	DDRD |= (1<<DDD4);
 	PORTD |= (1<<PORTD4);
 
@@ -122,7 +122,7 @@ int main(void)
 	// Enable pull-up on all unused pins to define voltage on pin (decrease power consumption)
 	PORTB |= (1<<PORTB6) | (1<<PORTB7);
 	PORTC |= 0xFF;
-	PORTD |= (1<<PORTD6) | (1<<PORTD5) | (1<<PORTD4) | (1<<PORTD3) | (1<<PORTD2) | (1<<PORTD1) | (1<<PORTD0);
+	PORTD |= (1<<PORTD4) | (1<<PORTD3) | (1<<PORTD2) | (1<<PORTD1) | (1<<PORTD0);
 
 	g_battery_voltage = 0;
 	g_battery_low_flag = 0;
