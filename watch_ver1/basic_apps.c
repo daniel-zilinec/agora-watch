@@ -73,16 +73,24 @@ void app_set_time(volatile time_t *time)
 			{
 	    		new_time.hours = 23;
 			}
-	    	++ current_digit;
+	    	++current_digit;
 	    	g_dirty_framebuffers = 1;
 	    }
 
 	    if (button2_state())				// BUTTON 2	- cancel
 	    {
-	    	// wait until all buttons are depressed
-	    	while (button_pressed());
+	    	if (current_digit > 1)			// go one digit left if it is not the first digit
+	    	{
+	    		--current_digit;
+	    		g_dirty_framebuffers = 1;
+	    	}
+	    	else							// cancel menu
+	    	{
+	    		// wait until all buttons are depressed
+	    		while (button_pressed());
 
-	    	return;
+	    		return;
+	    	}
 	    }
 
 	    if (button3_state())				// BUTTON 3 - increment current digit
