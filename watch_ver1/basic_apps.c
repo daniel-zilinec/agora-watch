@@ -5,12 +5,13 @@
  *      Author: dadan
  */
 #include "basic_apps.h"
-
-
+#include <avr/sleep.h>
 
 volatile time_t g_time;	// current time
 time_t g_alarm_time;	// alarm is set to this time
 uint8_t g_alarm_enabled = 0;
+
+extern volatile uint8_t g_sleep_allowed;
 
 void app_set_time(volatile time_t *time)
 {
@@ -285,12 +286,33 @@ void backlight_disable()
 
 void alert_enable(uint8_t timeout)
 {
-	PORTD |= (1<<PORTD5);
+	g_sleep_allowed = 0;
+
+	// Initiate TC1
+	power_timer1_enable();
+	TCCR1B |= (1 << CS11) | (1<<CS10);		// clk_io / 64
+	TCNT1 = 0;
+	TIMSK1 |= (1 << TOIE1);
+
 	sw_timer[SW_TIMER_ALERT] = timeout;
 }
 
 void alert_disable()
 {
-	PORTD &= ~(1<<PORTD5);
+	TCCR1B = 0;		// stop TC1
+	TCNT1 = 0;
+	power_timer1_disable();
+
+	PORTD &= ~(1<<PORTD5);	// turn off buzzer
+	g_sleep_allowed = 1;
+}
+
+void mcu_sleep(void)
+{
+	if (g_sleep_allowed)
+	{
+		set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+		sleep_mode();			// Enter sleep mode - POWER SAVE mode
+	}
 }
 

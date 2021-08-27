@@ -16,10 +16,7 @@
  */
 
 #include <avr/io.h>
-#include <util/delay.h>
 #include <avr/interrupt.h>
-#include <avr/sleep.h>
-#include <avr/power.h>
 
 #include "main.h"
 #include "watchface.h"
@@ -39,20 +36,18 @@
 #include <avr/pgmspace.h>
 #include "time_font.h"
 
-
-// TODO: move backlight enabling after every keypress into interrupt
-// TODO: alarm - snooze & disable vibrating alarm
-
 volatile uint8_t display_refresh_needed;
 volatile uint16_t g_battery_voltage;
 volatile uint8_t g_battery_charging;
 volatile uint8_t g_temperature_wkup;		// flag if temperature sensor wakeup is needed
+volatile uint8_t g_sleep_allowed;			// disable sleep mode for MCU when non-zero; alarm buzzer is controlled by TC1 which is not running in sleep mode
 
 uint8_t g_battery_low_flag, g_battery_discharged_flag;
 
 image_buffer_t image_buffer;
 
 ISR(TIMER2_OVF_vect);
+ISR(TIMER1_OVF_vect);
 
 int main(void)
 {
@@ -112,8 +107,7 @@ int main(void)
 	g_dirty_framebuffers = 2;		// content of both framebuffers is undefined after startup
 	display_refresh_needed = 1;
 
-	set_sleep_mode(SLEEP_MODE_PWR_SAVE);
-
+	// --- disable unused peripherals ---
 	power_timer0_disable();
 	power_timer1_disable();
 	// power_twi_disable();
@@ -129,6 +123,7 @@ int main(void)
 	g_battery_discharged_flag = 0;
 	g_battery_charging = 0;
 	g_temperature_wkup = 0;
+	g_sleep_allowed = 1;
 
 	button_init();		// initialize buttons
 	temperature_enable();
@@ -219,7 +214,7 @@ int main(void)
 
 	    while (!display_refresh_needed)		// loop until display refresh needed
 	    {
-	    	sleep_mode();			// Enter sleep mode - POWER SAVE mode
+	    	mcu_sleep();
 	    	if (g_temperature_wkup)
 	    	{
 	    		temperature_enable();		// TWI reset is needed after CPU wake-up
@@ -230,6 +225,7 @@ int main(void)
 	    	if (button_pressed())
 	    	{
 	    		backlight_enable(DEFAULT_BACKLIGHT_TIME);
+	    		alert_disable();
 	    	}
 
 	    	// Button 3 & 4 - Enter menu
@@ -356,23 +352,18 @@ ISR(TIMER2_OVF_vect)
 	{
 		alert_disable();
 	}
-	else
-	{
-		if (g_time.seconds % 2)		// make interrupted vibrations every second
-		{
-			alert_disable();
-		}
-		else
-		{
-			alert_enable(sw_timer[SW_TIMER_ALERT]);
-		}
-	}
+
 
 	if (sw_timer[SW_TIMER_BACKLIGHT] == 0)
 	{
 		backlight_disable();
 	}
 
+}
+
+ISR(TIMER1_OVF_vect)
+{
+	PORTD ^= (1<<PORTD5);
 }
 
 ISR (PCINT1_vect)

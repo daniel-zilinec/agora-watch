@@ -33,6 +33,8 @@ void backlight_disable();
 void alert_enable(uint8_t timeout);
 void alert_disable();
 
+void mcu_sleep();
+
 
 
 #endif /* BASIC_APPS_H_ */

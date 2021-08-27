@@ -10,8 +10,8 @@
 
 #include <avr/io.h>
 
-#define DEFAULT_BACKLIGHT_TIME	4		// enable backlight for 4 seconds
-#define DEFAULT_ALERT_TIME		14		// enable alert for 14 seconds
+#define DEFAULT_BACKLIGHT_TIME	4		// enable backlight for n seconds
+#define DEFAULT_ALERT_TIME		10		// enable alert for n seconds
 #define IDLE_TIME		8		// after this time stop application and jump back to main screen with time
 
 
