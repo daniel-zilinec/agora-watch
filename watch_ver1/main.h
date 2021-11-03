@@ -8,7 +8,7 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define FW_VER	"0.2.2-dev"
+#define FW_VER	"0.2.2"
 
 // --- PCB version ---
 #define HW_VER_1_1		// PCB version 1.1
