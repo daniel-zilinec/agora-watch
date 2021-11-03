@@ -41,8 +41,10 @@
 ******************************************************************************/
 #include "EPD_2in13_B72.h"
 #include "spi.h"
-#include <util/delay.h>	// todo: remove this with _delay_ms()
+#include "basic_apps.h"
+#include <util/delay.h>
 #include <avr/pgmspace.h>
+#include <avr/sleep.h>
 
 
 const unsigned char lut_B72_full_update[] = {
@@ -145,7 +147,7 @@ void EPD_WaitUntilIdle(void)
 
 	while (PIND & (1<<PIND7))	// low-idle / high-busy
 	{
-		_delay_ms(100);		// todo: remove this
+		mcu_sleep();
 	}
 }
 

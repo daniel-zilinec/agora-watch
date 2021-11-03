@@ -5,12 +5,13 @@
  *      Author: dadan
  */
 #include "basic_apps.h"
-
-
+#include <avr/sleep.h>
 
 volatile time_t g_time;	// current time
 time_t g_alarm_time;	// alarm is set to this time
 uint8_t g_alarm_enabled = 0;
+
+extern volatile uint8_t g_sleep_allowed;
 
 void app_set_time(volatile time_t *time)
 {
@@ -72,16 +73,24 @@ void app_set_time(volatile time_t *time)
 			{
 	    		new_time.hours = 23;
 			}
-	    	++ current_digit;
+	    	++current_digit;
 	    	g_dirty_framebuffers = 1;
 	    }
 
 	    if (button2_state())				// BUTTON 2	- cancel
 	    {
-	    	// wait until all buttons are depressed
-	    	while (button_pressed());
+	    	if (current_digit > 1)			// go one digit left if it is not the first digit
+	    	{
+	    		--current_digit;
+	    		g_dirty_framebuffers = 1;
+	    	}
+	    	else							// cancel menu
+	    	{
+	    		// wait until all buttons are depressed
+	    		while (button_pressed());
 
-	    	return;
+	    		return;
+	    	}
 	    }
 
 	    if (button3_state())				// BUTTON 3 - increment current digit
@@ -195,18 +204,11 @@ void app_set_time(volatile time_t *time)
 
 void app_status_screen(void)
 {
-	epd_reset();			// todo: wasting with power in delay loops
 	epd_init_partial(DISPLAY_TEMPERTURE);
 	epd_clear_frame_memory(COLOR_WHITE);
 
 	// wait until all buttons are depressed
 	while (button_pressed());
-
-//	canvas_display_text(&image_buffer,&font24, "Battery: 3.86V", 0, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "60%", 24, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "Temp:     24 C", 48, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "Uptime:02d 03h", 72, 10, 1);
-//	canvas_display_text(&image_buffer,&font24, "Charge:01d 02h", 96, 10, 1);
 
 	char text[8];
 
@@ -275,12 +277,6 @@ void app_status_screen(void)
 	while (button_pressed());
 }
 
-
-void app_bluetooth()
-{
-
-}
-
 void backlight_enable(uint8_t timeout)
 {
 	#ifdef BACKLIGHT_ENABLED
@@ -298,12 +294,35 @@ void backlight_disable()
 
 void alert_enable(uint8_t timeout)
 {
-	PORTD |= (1<<PORTD5);
+	g_sleep_allowed = 0;
+
+	// Initiate TC1 in CTC (Clear Timer on Compare match) mode
+	power_timer1_enable();
+	OCR1A = 0x2000;				// count to this number, 0xFFFF is cca 1 second
+	TCCR1B |= (1<WGM12) | (1 << CS11) | (1<<CS10);		// CTC mode | clk_io / 64
+	TCNT1 = 0;
+	TIMSK1 |=  (1 << OCIE1A);
+
+
 	sw_timer[SW_TIMER_ALERT] = timeout;
 }
 
 void alert_disable()
 {
-	PORTD &= ~(1<<PORTD5);
+	TCCR1B = 0;		// stop TC1
+	TCNT1 = 0;
+	power_timer1_disable();
+
+	PORTD &= ~(1<<PORTD5);	// turn off buzzer
+	g_sleep_allowed = 1;
+}
+
+void mcu_sleep(void)
+{
+	if (g_sleep_allowed)
+	{
+		set_sleep_mode(SLEEP_MODE_PWR_SAVE);
+		sleep_mode();			// Enter sleep mode - POWER SAVE mode
+	}
 }
 

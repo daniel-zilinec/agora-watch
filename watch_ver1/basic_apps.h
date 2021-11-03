@@ -26,14 +26,14 @@ extern uint8_t g_alarm_enabled;
 
 void app_set_time(volatile time_t *time);
 void app_status_screen(void);
-void app_bluetooth();
-
 
 void backlight_enable(uint8_t timeout);
 void backlight_disable();
 
 void alert_enable(uint8_t timeout);
 void alert_disable();
+
+void mcu_sleep();
 
 
 
