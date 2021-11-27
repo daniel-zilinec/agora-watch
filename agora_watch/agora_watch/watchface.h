@@ -9,6 +9,7 @@
 #define WATCHFACE_H_
 
 #include "epd_1_54.h"
+#include "EPD_2in13_B72.h"
 #include "basic_apps.h"
 
 #define WATCHFACE_COUNT	2				// number of available watchfaces (1 or more)

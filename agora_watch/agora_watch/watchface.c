@@ -138,13 +138,19 @@ void watchface_show(const uint8_t watchface_num)
 	    else				// default watchface
 	    {
 		    //----- BIG DIGITS ---------
-		    canvas_display_from_flash(&image_buffer, &time_font[g_time.hours / 10], 8, 176, 1);	// fist digit
-		    canvas_display_from_flash(&image_buffer, &time_font[g_time.hours % 10], 8, 128, 1);	// second digit
+			// const uint16_t x_offset = 24;  // for 24 hour watchface
+			const uint16_t x_offset = 40; 
+			
+		    // canvas_display_from_flash(&image_buffer, &time_font[g_time.hours / 10], 8, x_offset + 152, 1);	// fist digit
+		    canvas_display_from_flash(&image_buffer, &time_font[g_time.hours % 10], 8, x_offset + 104, 1);	// second digit
 
-		    canvas_display_from_flash(&image_buffer, &time_font[10], 8, 120, 1);	// delimiter
+		    canvas_display_from_flash(&image_buffer, &time_font[10], 8, x_offset + 96, 1);	// delimiter
 
-		    canvas_display_from_flash(&image_buffer, &time_font[g_time.minutes / 10], 8, 72, 1);	// third digit
-		    canvas_display_from_flash(&image_buffer, &time_font[g_time.minutes % 10], 8, 24, 1);		// fourth digit
+		    canvas_display_from_flash(&image_buffer, &time_font[g_time.minutes / 10], 8, x_offset + 48, 1);	// third digit
+		    canvas_display_from_flash(&image_buffer, &time_font[g_time.minutes % 10], 8, x_offset, 1);		// fourth digit
+			
+			canvas_display_text(&image_buffer,&font24, "AM", (EPD_B72_WIDTH/3) - 24, 0, 1);		
+			// canvas_display_text(&image_buffer,&font24, "PM", (EPD_B72_WIDTH/3) + 2*24, 0, 1);		
 	    }
 
 #endif

@@ -84,8 +84,8 @@ int main(void)
 
 
 	// initialize time
-	g_time.hours = 12;
-	g_time.minutes = 34;
+	g_time.hours = 01;
+	g_time.minutes = 23;
 	g_time.seconds = 0;
 
 	// initialize date
