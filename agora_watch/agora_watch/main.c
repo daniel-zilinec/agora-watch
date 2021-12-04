@@ -60,6 +60,8 @@ int main(void)
 	// Hold LDO enabled even without VIN voltage (LDE_EN). Only for PCB v1.0, this pin is connected nowhere on PCB v1.1
 	DDRD |= (1<<DDD4);
 	PORTD |= (1<<PORTD4);
+	
+	DDRC |= (1<<DDC3);
 
 	// vibrate and blink with backlight on startup - say hello
 	backlight_enable(DEFAULT_BACKLIGHT_TIME);
@@ -74,7 +76,7 @@ int main(void)
     // initialize Timer/Counter 2 in asynchronous mode with external 32.768 kHz crystal
     ASSR = (1<<AS2);				// enable asynchronous operation - this bit must be set before TCCR2x
     TCCR2A = 0;						// WGM mode 0 - normal operation
-    TCCR2B = (1<<CS20);	// prescaler /128 - one overflow per second
+    TCCR2B = (1<<CS20);				// no prescaler - 128 Hz
     TIMSK2 = (1<<TOIE2);			// enable overflow interrupt
 	
 	sei();
@@ -84,5 +86,6 @@ int main(void)
 	
 ISR(TIMER2_OVF_vect)
 {
-	PORTD ^= (1<<PORTD6);		// toggle LED pin
+	// PORTD ^= (1<<PORTD6);		// toggle LED pin
+	PORTC ^= (1<<PORTC3);			// toggle pin at frequency 128 Hz -> output is 64 Hz
 }
