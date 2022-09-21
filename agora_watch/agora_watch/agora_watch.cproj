@@ -15,7 +15,7 @@
     <AssemblyName>agora_watch</AssemblyName>
     <Name>agora_watch</Name>
     <RootNamespace>agora_watch</RootNamespace>
-    <ToolchainFlavour>XC8_2.31</ToolchainFlavour>
+    <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
