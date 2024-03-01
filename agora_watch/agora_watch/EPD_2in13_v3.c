@@ -46,42 +46,50 @@
 #include <avr/pgmspace.h>
 #include <avr/sleep.h>
 
-
-const unsigned char lut_B72_full_update[] = {
-    0x80, 0x60, 0x40, 0x00, 0x00, 0x00, 0x00,       //LUT0: BB:     VS 0 ~7
-    0x10, 0x60, 0x20, 0x00, 0x00, 0x00, 0x00,       //LUT1: BW:     VS 0 ~7
-    0x80, 0x60, 0x40, 0x00, 0x00, 0x00, 0x00,       //LUT2: WB:     VS 0 ~7
-    0x10, 0x60, 0x20, 0x00, 0x00, 0x00, 0x00,       //LUT3: WW:     VS 0 ~7
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       //LUT4: VCOM:   VS 0 ~7
-
-    0x03, 0x03, 0x00, 0x00, 0x02,                   // TP0 A~D RP0
-    0x09, 0x09, 0x00, 0x00, 0x02,                   // TP1 A~D RP1
-    0x03, 0x03, 0x00, 0x00, 0x02,                   // TP2 A~D RP2
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP3 A~D RP3
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP4 A~D RP4
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP5 A~D RP5
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP6 A~D RP6
-
-    0x15, 0x41, 0xA8, 0x32, 0x30, 0x0A,
+static const unsigned char lut_v3_full_update[]= {
+	0x80,	0x4A,	0x40,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x40,	0x4A,	0x80,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x80,	0x4A,	0x40,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x40,	0x4A,	0x80,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0xF,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0xF,	0x0,	0x0,	0xF,	0x0,	0x0,	0x2,
+	0xF,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x1,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,	0x0,
+	0x22,	0x22,	0x22,	0x22,	0x22,	0x22,	0x0,	0x0,	0x0,
+	0x22,	0x17,	0x41,	0x0,	0x32,	0x36
 };
 
-const unsigned char lut_B72_partial_update[] = { //20 bytes
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       //LUT0: BB:     VS 0 ~7
-    0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       //LUT1: BW:     VS 0 ~7
-    0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       //LUT2: WB:     VS 0 ~7
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       //LUT3: WW:     VS 0 ~7
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,       //LUT4: VCOM:   VS 0 ~7
-
-    0x0A, 0x00, 0x00, 0x00, 0x00,                   // TP0 A~D RP0
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP1 A~D RP1
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP2 A~D RP2
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP3 A~D RP3
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP4 A~D RP4
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP5 A~D RP5
-    0x00, 0x00, 0x00, 0x00, 0x00,                   // TP6 A~D RP6
-
-    0x15, 0x41, 0xA8, 0x32, 0x30, 0x0A,
+static const unsigned char lut_v3_partial_update[]= {
+	0x0,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x80,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x40,0x40,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x14,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x1,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x1,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x0,0x0,0x0,0x0,0x0,0x0,0x0,
+	0x22,0x22,0x22,0x22,0x22,0x22,0x0,0x0,0x0,
+	0x22,0x17,0x41,0x00,0x32,0x36,
 };
+
 /******************************************************************************
   function :	Software reset
   parameter:
@@ -170,18 +178,13 @@ void EPD_TurnOnDisplay(void)
 ******************************************************************************/
 uint8_t EPD_Init(uint8_t update)
 {
-    uint8_t count;
     EPD_Reset();
 
-    if (update == FULL_UPDATE) {
+    if (update == FULL_UPDATE) 
+	{
         EPD_WaitUntilIdle();
         EPD_SendCommand(0x12); // soft reset
         EPD_WaitUntilIdle();
-
-        EPD_SendCommand(0x74); //set analog block control
-        EPD_SendData(0x54);
-        EPD_SendCommand(0x7E); //set digital block control
-        EPD_SendData(0x3B);
 
         EPD_SendCommand(0x01); //Driver output control
         EPD_SendData(0xF9);
@@ -189,74 +192,52 @@ uint8_t EPD_Init(uint8_t update)
         EPD_SendData(0x00);
 
         EPD_SendCommand(0x11); //data entry mode
-        EPD_SendData(0x01);
-
-        EPD_SendCommand(0x44); //set Ram-X address start/end position
-        EPD_SendData(0x00);
-        EPD_SendData(0x0F);    //0x0C-->(15+1)*8=128
-
-        EPD_SendCommand(0x45); //set Ram-Y address start/end position
-        EPD_SendData(0xF9);   //0xF9-->(249+1)=250
-        EPD_SendData(0x00);
-        EPD_SendData(0x00);
-        EPD_SendData(0x00);
-
-        EPD_SendCommand(0x3C); //BorderWavefrom
         EPD_SendData(0x03);
 
-        EPD_SendCommand(0x2C);     //VCOM Voltage
-        EPD_SendData(0x55);    //
-
-        EPD_SendCommand(0x03);
-        EPD_SendData(lut_B72_full_update[70]);
-
-        EPD_SendCommand(0x04); //
-        EPD_SendData(lut_B72_full_update[71]);
-        EPD_SendData(lut_B72_full_update[72]);
-        EPD_SendData(lut_B72_full_update[73]);
-
-        EPD_SendCommand(0x3A);     //Dummy Line
-        EPD_SendData(lut_B72_full_update[74]);
-        EPD_SendCommand(0x3B);     //Gate time
-        EPD_SendData(lut_B72_full_update[75]);
-
-        EPD_SendCommand(0x32);
-        for (count = 0; count < 70; count++)
-            EPD_SendData(lut_B72_full_update[count]);
-
-        EPD_SendCommand(0x4E);   // set RAM x address count to 0;
-        EPD_SendData(0x00);
-        EPD_SendCommand(0x4F);   // set RAM y address count to 0X127;
-        EPD_SendData(0xF9);
-        EPD_SendData(0x00);
-        EPD_WaitUntilIdle();
-    } else {
-        EPD_SendCommand(0x2C);     //VCOM Voltage
-        EPD_SendData(0x16);         // original 0x26
-
-        EPD_WaitUntilIdle();
-
-        EPD_SendCommand(0x32);
-        for (count = 0; count < 70; count++)
-            EPD_SendData(lut_B72_partial_update[count]);
-
-        EPD_SendCommand(0x37);
-        EPD_SendData(0x00);
-        EPD_SendData(0x00);
-        EPD_SendData(0x00);
-        EPD_SendData(0x00);
-        EPD_SendData(0x40);
-        EPD_SendData(0x00);
-        EPD_SendData(0x00);
-
-        EPD_SendCommand(0x22);
-        EPD_SendData(0xC0);
-        EPD_SendCommand(0x20);
-        EPD_WaitUntilIdle();
+        EPD_SendCommand(0x44); //set Ram-X address start/end position
 
         EPD_SendCommand(0x3C); //BorderWavefrom
-        EPD_SendData(0x01);
+        EPD_SendData(0x05);
+
+		EPD_SendCommand(0x3C); //BorderWavefrom
+		EPD_SendData(0x05);
+
+		EPD_SendCommand(0x21); //  Display update control
+		EPD_SendData(0x00);
+		EPD_SendData(0x80);
+
+		EPD_SendCommand(0x18); //Read built-in temperature sensor
+		EPD_SendData(0x80);
+
+
+        EPD_WaitUntilIdle();
+		EPD_Lut(lut_v3_full_update);
+    } 
+	else 
+	{
+		EPD_Lut(lut_v3_partial_update);
+		
+		EPD_SendCommand(0x37);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		EPD_SendData(0x40);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		EPD_SendData(0x00);
+		
+		EPD_SendCommand(0x3C);	//BorderWavefrom
+		EPD_SendData(0x80);		
+		
+		EPD_SendCommand(0x22); //Display Update Sequence Option
+		EPD_SendData(0xC0);    // Enable clock and  Enable analog
+		EPD_SendCommand(0x20);  //Activate Display Update Sequence
+		EPD_WaitUntilIdle();
     }
+	
     return 0;
 }
 
@@ -282,11 +263,12 @@ static void EPD_SetWindows(int x_start, int y_start, int x_end, int y_end)
 static void EPD_SetCursor(int x, int y)
 {
     EPD_SendCommand(0x4E);
-    /* x point must be the multiple of 8 or the last 3 bits will be ignored */
-    EPD_SendData((x >> 3) & 0xFF);
+    EPD_SendData((x >> 3) & 0xFF);		// x point must be the multiple of 8 or the last 3 bits will be ignored
+	
     EPD_SendCommand(0X4F);
     EPD_SendData(y & 0xFF);
     EPD_SendData((y >> 8) & 0xFF);
+	
     EPD_WaitUntilIdle();
 }
 
@@ -300,12 +282,15 @@ void EPD_Clear(void)
     Width = (EPD_B72_WIDTH % 8 == 0) ? (EPD_B72_WIDTH / 8 ) : (EPD_B72_WIDTH / 8 + 1);
     Height = EPD_B72_HEIGHT;
     EPD_SendCommand(0x24);
-    for (uint16_t j = 0; j < Height; j++) {
-        for (uint16_t i = 0; i < Width; i++) {
+    for (uint16_t j = 0; j < Height; j++) 
+	{
+        for (uint16_t i = 0; i < Width; i++) 
+		{
             EPD_SendData(0XFF);
         	// EPD_SendData(0X00);
         }
     }
+	
     EPD_TurnOnDisplay();
 }
 
@@ -320,11 +305,14 @@ void EPD_Display(uint8_t *Image)
     Height = EPD_B72_HEIGHT;
 
     EPD_SendCommand(0x24);
-    for (uint16_t j = 0; j < Height; j++) {
-        for (uint16_t i = 0; i < Width; i++) {
+    for (uint16_t j = 0; j < Height; j++) 
+	{
+        for (uint16_t i = 0; i < Width; i++)
+		 {
             EPD_SendData(pgm_read_byte(&Image[i + j * Width]));
         }
     }
+	
     EPD_TurnOnDisplay();
 }
 
@@ -335,11 +323,14 @@ void EPD_DisplayWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, uint16
     Height = Yend - Ystart;
 
     EPD_SetWindows(Xstart, Ystart, Xend, Yend);
+	
     uint16_t i, j;
-    for (j = 0; j < Height; j++) {
+    for (j = 0; j < Height; j++) 
+	{
         EPD_SetCursor(Xstart, Ystart + j);
         EPD_SendCommand(0x24);
-        for (i = 0; i < Width; i++) {
+        for (i = 0; i < Width; i++) 
+		{
             EPD_SendData(Image[i + j * Width]);
         }
     }
@@ -348,21 +339,29 @@ void EPD_DisplayWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, uint16
 void EPD_DisplayPart(uint8_t *Image)
 {
     uint16_t Width, Height;
+	
     Width = (EPD_B72_WIDTH % 8 == 0) ? (EPD_B72_WIDTH / 8 ) : (EPD_B72_WIDTH / 8 + 1);
     Height = EPD_B72_HEIGHT;
     EPD_SendCommand(0x24);
-    for (uint16_t j = 0; j < Height; j++) {
-        for (uint16_t i = 0; i < Width; i++) {
+	
+    for (uint16_t j = 0; j < Height; j++) 
+	{
+        for (uint16_t i = 0; i < Width; i++) 
+		{
             EPD_SendData(Image[i + j * Width]);
         }
     }
 
-    EPD_SendCommand(0x26);   //Write Black and White image to RAM
-    for (uint16_t j = 0; j < Height; j++) {
-        for (uint16_t i = 0; i < Width; i++) {
+    EPD_SendCommand(0x26);   // Write Black and White image to RAM
+	
+    for (uint16_t j = 0; j < Height; j++) 
+	{
+        for (uint16_t i = 0; i < Width; i++) 
+		{
             EPD_SendData(~Image[i + j * Width]);
         }
     }
+	
     EPD_TurnOnDisplay();
 }
 
@@ -373,19 +372,24 @@ void EPD_DisplayPartWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, ui
     Height = Yend - Ystart;
 
     EPD_SetWindows(Xstart, Ystart, Xend, Yend);
+	
     uint16_t i, j;
-    for (j = 0; j < Height; j++) {
+    for (j = 0; j < Height; j++) 
+	{
         EPD_SetCursor(Xstart, Ystart + j);
         EPD_SendCommand(0x24);
-        for (i = 0; i < Width; i++) {
+        for (i = 0; i < Width; i++) 
+		{
             EPD_SendData(Image[i + j * Width]);
         }
     }
 
-    for (j = 0; j < Height; j++) {
+    for (j = 0; j < Height; j++) 
+	{
         EPD_SetCursor(Xstart, Ystart + j);
         EPD_SendCommand(0x26);
-        for (i = 0; i < Width; i++) {
+        for (i = 0; i < Width; i++) 
+		{
             EPD_SendData(~Image[i + j * Width]);
         }
     }
@@ -405,4 +409,33 @@ void EPD_Sleep(void)
     EPD_SendData(0x01);
     // DEV_Delay_ms(100);
     _delay_ms(100);
+}
+
+/******************************************************************************
+function :	Send lut data and configuration
+parameter:	
+    lut :   lut data
+******************************************************************************/
+void EPD_Lut(const unsigned char *lut)
+{
+	unsigned char count;
+	EPD_SendCommand(0x32);
+	for(count = 0; count < 153; count++) 
+	{
+		EPD_SendData(lut[count]);
+	}
+
+	EPD_SendCommand(0x3f);
+	EPD_SendData(*(lut+153));
+	
+	EPD_SendCommand(0x03);		// gate voltage
+	EPD_SendData(*(lut+154));
+	
+	EPD_SendCommand(0x04);		// source voltage
+	EPD_SendData(*(lut+155));	// VSH
+	EPD_SendData(*(lut+156));	// VSH2
+	EPD_SendData(*(lut+157));	// VSL
+	
+	EPD_SendCommand(0x2c);		// VCOM
+	EPD_SendData(*(lut+158));
 }

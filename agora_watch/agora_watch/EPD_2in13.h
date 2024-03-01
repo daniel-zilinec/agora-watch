@@ -54,5 +54,6 @@ void EPD_DisplayWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, uint16
 void EPD_DisplayPart(uint8_t *Image);
 void EPD_DisplayPartWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, uint16_t Xend, uint16_t Yend);
 void EPD_Sleep(void);
+void EPD_Lut(const unsigned char *lut);
 
 #endif

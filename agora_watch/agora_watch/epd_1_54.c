@@ -8,7 +8,7 @@
 #include "epd_1_54.h"
 #include "spi.h"
 #include <util/delay.h>	// todo: remove this with _delay_ms()
-#include "EPD_2in13_B72.h"
+#include "EPD_2in13.h"
 
 #ifdef EPD_SIZE_1_54
 
