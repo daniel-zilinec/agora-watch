@@ -286,7 +286,7 @@ void EPD_Clear(void)
 	{
         for (uint16_t i = 0; i < Width; i++) 
 		{
-            EPD_SendData(0XFF);
+            EPD_SendData(INVERTED_COLORS ? 0xFF : 0);
         	// EPD_SendData(0X00);
         }
     }
@@ -309,7 +309,7 @@ void EPD_Display(uint8_t *Image)
 	{
         for (uint16_t i = 0; i < Width; i++)
 		 {
-            EPD_SendData(pgm_read_byte(&Image[i + j * Width]));
+            EPD_SendData(pgm_read_byte(&Image[i + j * Width])  ^ (INVERTED_COLORS ? 0xFF : 0));
         }
     }
 	
@@ -331,7 +331,7 @@ void EPD_DisplayWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, uint16
         EPD_SendCommand(0x24);
         for (i = 0; i < Width; i++) 
 		{
-            EPD_SendData(Image[i + j * Width]);
+            EPD_SendData(Image[i + j * Width] ^ (INVERTED_COLORS ? 0xFF : 0));
         }
     }
 }
@@ -348,7 +348,7 @@ void EPD_DisplayPart(uint8_t *Image)
 	{
         for (uint16_t i = 0; i < Width; i++) 
 		{
-            EPD_SendData(Image[i + j * Width]);
+            EPD_SendData(Image[i + j * Width] ^ (INVERTED_COLORS ? 0xFF : 0));
         }
     }
 
@@ -358,7 +358,7 @@ void EPD_DisplayPart(uint8_t *Image)
 	{
         for (uint16_t i = 0; i < Width; i++) 
 		{
-            EPD_SendData(~Image[i + j * Width]);
+            EPD_SendData(~Image[i + j * Width] ^ (INVERTED_COLORS ? 0xFF : 0));
         }
     }
 	
@@ -380,7 +380,7 @@ void EPD_DisplayPartWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, ui
         EPD_SendCommand(0x24);
         for (i = 0; i < Width; i++) 
 		{
-            EPD_SendData(Image[i + j * Width]);
+            EPD_SendData(Image[i + j * Width] ^ (INVERTED_COLORS ? 0xFF : 0));
         }
     }
 
@@ -390,7 +390,7 @@ void EPD_DisplayPartWindows(uint8_t *Image, uint16_t Xstart, uint16_t Ystart, ui
         EPD_SendCommand(0x26);
         for (i = 0; i < Width; i++) 
 		{
-            EPD_SendData(~Image[i + j * Width]);
+            EPD_SendData(~Image[i + j * Width] ^ (INVERTED_COLORS ? 0xFF : 0));
         }
     }
 }
