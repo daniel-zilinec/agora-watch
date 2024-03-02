@@ -27,7 +27,7 @@
 #include "fonts.h"
 #include "spi.h"
 #include "epd_1_54.h"
-#include "EPD_2in13_B72.h"
+#include "EPD_2in13.h"
 #include "canvas.h"
 #include "basic_apps.h"
 #include "timers.h"

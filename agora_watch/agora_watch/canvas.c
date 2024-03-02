@@ -8,7 +8,7 @@
 #include "canvas.h"
 #include <avr/pgmspace.h>
 #include "epd_1_54.h"
-#include "EPD_2in13_B72.h"
+#include "EPD_2in13.h"
 
 uint8_t g_dirty_framebuffers;
 
