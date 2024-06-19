@@ -221,12 +221,6 @@ void app_status_screen(void)
 	battery_get_percentage_string(text, 6);
 	canvas_display_text(&image_buffer,&font24, text, 24, 10, 1);
 
-	// show temperature
-	// char s_temperature[8];
-	temperature_celsius_string(g_temperature_raw, text, 8);
-	canvas_display_text(&image_buffer,&font24, text, 24, 128, 1);
-
-
 	// show uptime from last charge
 	uint16_t days;
 	char s_uptime[6];
