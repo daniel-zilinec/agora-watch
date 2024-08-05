@@ -8,10 +8,11 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
-#define FW_VER	"0.2.3"
+#define FW_VER	"0.3.0"
 
 // --- PCB version ---
-#define HW_VER_1_1		// PCB version 1.1
+#define HW_VER_2_1		// PCB version 2.1 - TXCO
+// #define HW_VER_1_1		// PCB version 1.1
 // #define HW_VER_1_0	// PCB version 1.0
 
 // --- DEBUG AND TESTING ---
@@ -21,7 +22,7 @@
 // #define DEBUG		// watchface with debug variables and only small time
 
 // --- DEVICE CONFIGURATION ---
-// #define DEVICE_HAS_ALARM		// device equipped with alarm buzzer/vibration motor
+#define DEVICE_HAS_ALARM		// device equipped with alarm buzzer/vibration motor
 #define BACKLIGHT_ENABLED
 
 

@@ -30,7 +30,7 @@ void battery_enable_adc()
 	// set battery charge status pin as input
 	DDRC &= ~(1<<0);
 
-#ifdef HW_VER_1_1
+#if defined (HW_VER_1_1) || defined (HW_VER_2_1)
 	// enable pull-up for battery charge status pin (needed for ver1.1)
 	PORTC |= (1<<0);
 #else
@@ -53,7 +53,7 @@ void battery_disable_adc()
 
 uint8_t battery_is_charging()
 {
-#ifdef HW_VER_1_1
+#if defined (HW_VER_1_1) || defined (HW_VER_2_1)
 	if (PINC & (1<<0))
 		return 0;
 	else

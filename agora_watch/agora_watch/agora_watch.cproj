@@ -170,12 +170,6 @@
     <Compile Include="spi.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="temperature.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="temperature.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="timers.c">
       <SubType>compile</SubType>
     </Compile>

@@ -6,7 +6,6 @@
  */
 #include "watchface.h"
 #include "battery.h"
-#include "temperature.h"
 #include "main.h"
 
 void watchface_show(const uint8_t watchface_num)
@@ -127,11 +126,6 @@ void watchface_show(const uint8_t watchface_num)
 			s_uptime[9] = 0;
 
 			canvas_display_text(&image_buffer,&font24, s_uptime, 72, 92, 1);
-
-			// show temperature
-			char s_temperature[8];
-			temperature_celsius_string(g_temperature_raw, s_temperature, 8);
-			canvas_display_text(&image_buffer,&font24, s_temperature, 96, 0, 1);
 
 	    }
 
